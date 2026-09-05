@@ -8,12 +8,49 @@
 </head>
 <body>
   <div class="container">
-    <header>
-      <div class="top-nav">
-        <button id="help-btn" class="icon-btn" title="How to play">?</button>
+    <header class="app-header">
+      <!-- 3-Column Balanced Navigation Grid -->
+      <div class="top-nav-grid">
+        <!-- Left: Vault Entry -->
+        <div class="nav-left">
+          <a href="vault.html" class="nav-btn vault-link" title="The Vault (Archived Cases)">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="vault-btn-label">VAULT</span>
+          </a>
+        </div>
+
+        <!-- Center: Branding -->
+        <div class="nav-center">
+          <h1 class="brand-title">CINEMIND</h1>
+          <p id="daily-date" class="date-header">THE DAILY DEDUCTION</p>
+        </div>
+
+        <!-- Right: Utility Controls -->
+        <div class="nav-right">
+          <button id="theme-btn" class="nav-btn icon-only" title="Toggle theme" aria-label="Toggle Theme">
+            <svg id="theme-icon" class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+          <button id="help-btn" class="nav-btn icon-only" title="How to play" aria-label="How to play">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </button>
+        </div>
       </div>
-      <h1>CINEMIND</h1>
-      <p id="daily-date" class="date-header">THE DAILY DEDUCTION</p>
 
       <!-- Category Toggle Bar -->
       <div class="category-toggle">
@@ -22,29 +59,38 @@
       </div>
 
       <!-- 5-Clue Step Tracker -->
-      <div id="progress-tracker" class="tracker">
-        <div class="pip active"></div>
-        <div class="pip"></div>
-        <div class="pip"></div>
-        <div class="pip"></div>
-        <div class="pip"></div>
-      </div>
+      <div id="progress-tracker" class="tracker"></div>
     </header>
 
-    <div id="clues-list">
-      <!-- Clues render dynamically -->
+    <!-- Mystery Poster Card (Hidden during play, reveals on game over) -->
+    <div id="poster-card" class="poster-card mystery-locked">
+      <div class="poster-graphic">
+        <span class="poster-icon">🎬</span>
+      </div>
+      <div class="poster-info">
+        <div class="poster-status-label">CLASSIFIED PRODUCTION</div>
+        <div class="poster-subtext">Official poster reveals upon case completion</div>
+      </div>
     </div>
 
+    <!-- Search bar & status message placed above the clues -->
     <div class="guess-container">
-      <input type="text" id="guess-input" placeholder="Enter title...">
-      <button id="guess-btn">Guess</button>
+      <div class="input-wrapper">
+        <input type="text" id="guess-input" placeholder="Search & select a title..." autocomplete="off">
+        <div id="suggestions-list" class="suggestions-dropdown hidden"></div>
+      </div>
     </div>
 
     <p id="status-message"></p>
+
+    <!-- Clues list now renders underneath, newest clue first -->
+    <div id="clues-list"></div>
   </div>
 
   <script src="films.js"></script>
   <script src="tv.js"></script>
+  <script src="titles-film.js"></script>
+  <script src="titles-tv.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

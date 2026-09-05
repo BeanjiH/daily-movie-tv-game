@@ -1,11 +1,45 @@
+:root {
+  --bg-color: #0b0f17;
+  --bg-gradient: radial-gradient(circle at 50% 10%, #172337 0%, #080c14 100%);
+  --card-bg: #151d28;
+  --card-border: #233145;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --accent: #4dd0e1;
+  --input-bg: #0b111a;
+  --input-border: #26354a;
+  --slugline: #38bdf8;
+  --script-ink: #d8d3c7;
+  --binding-line: #233348;
+}
+
+[data-theme="light"] {
+  --bg-color: #f6f3ea;
+  --bg-gradient: radial-gradient(circle at 50% 10%, #faf8f3 0%, #eae4d5 100%);
+  --card-bg: #fffefb;
+  --card-border: #ded8cb;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --accent: #0284c7;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --slugline: #0369a1;
+  --script-ink: #2b2b2b;
+  --binding-line: #ded8cb;
+}
+
 body {
-  background-color: #12181b;
-  color: #e0e6ed;
+  background: var(--bg-color);
+  background-image: var(--bg-gradient);
+  color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   justify-content: center;
-  padding: 20px;
+  min-height: 100vh;
+  padding: 20px 16px;
   margin: 0;
+  box-sizing: border-box;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -13,65 +47,126 @@ body {
   width: 100%;
 }
 
-header {
-  text-align: center;
+/* =========================================================
+   BALANCED 3-COLUMN TOP NAVIGATION
+   ========================================================= */
+.app-header {
   margin-bottom: 20px;
-  position: relative;
 }
 
-.top-nav {
+.top-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 18px;
+}
+
+.nav-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.nav-center {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.nav-right {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: -10px;
+  align-items: center;
+  gap: 8px;
 }
 
-.icon-btn {
-  background: transparent;
-  border: 1px solid #334155;
-  color: #94a3b8;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+/* Uniform Stroke Icon Buttons */
+.nav-btn,
+.nav-btn:visited,
+.nav-btn:active {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  user-select: none;
+  height: 34px;
 }
 
-.icon-btn:hover {
-  border-color: #4dd0e1;
-  color: #4dd0e1;
+.nav-btn.icon-only {
+  width: 34px;
+  padding: 0;
 }
 
-h1 {
+.nav-btn.vault-link {
+  padding: 0 10px;
+  gap: 6px;
+}
+
+.nav-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(77, 208, 225, 0.08);
+}
+
+.nav-icon {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  flex-shrink: 0;
+  display: block;
+}
+
+.vault-btn-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Header Typography */
+.brand-title {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 800;
   letter-spacing: 3px;
-  color: #4dd0e1;
-  margin: 0 0 6px 0;
-  font-size: 1.8rem;
+  color: var(--accent);
+  line-height: 1.1;
 }
 
 .date-header {
-  color: #64748b;
-  margin: 0 0 16px 0;
-  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 4px 0 0 0;
+  font-size: 0.72rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   font-weight: 600;
 }
 
-/* Category Toggle Bar */
+/* =========================================================
+   CATEGORY TOGGLE & TRACKER
+   ========================================================= */
 .category-toggle {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin: 16px 0;
 }
 
 .tab-btn {
   flex: 1;
   max-width: 140px;
   padding: 8px 14px;
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  color: #94a3b8;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: 20px;
@@ -80,17 +175,16 @@ h1 {
 }
 
 .tab-btn:hover {
-  background-color: #334155;
-  color: #e0e6ed;
+  background-color: var(--input-border);
+  color: var(--text-main);
 }
 
 .tab-btn.active {
-  background-color: #4dd0e1;
-  color: #0f172a;
-  border-color: #4dd0e1;
+  background-color: var(--accent);
+  color: #0b0f17;
+  border-color: var(--accent);
 }
 
-/* Progress Tracker (5 Bars) */
 .tracker {
   display: flex;
   justify-content: center;
@@ -99,74 +193,484 @@ h1 {
 }
 
 .pip {
-  height: 5px;
+  height: 6px;
   flex: 1;
   max-width: 45px;
   background-color: #334155;
   border-radius: 3px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.25s ease;
 }
 
-.pip.active {
-  background-color: #4dd0e1;
+.pip.current {
+  background-color: var(--accent);
 }
 
-/* Clue Boxes */
-.clue-box {
-  background-color: #1e293b;
-  border-radius: 8px;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-left: 4px solid #4dd0e1;
-  font-size: 0.95rem;
-  line-height: 1.4;
+.pip.failed {
+  background-color: #ef4444;
 }
 
-.clue-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #94a3b8;
-  margin-bottom: 6px;
-  font-weight: bold;
+.pip.correct {
+  background-color: #22c55e;
 }
 
-/* Inputs & Actions */
+/* =========================================================
+   SEARCH BAR & AUTOCOMPLETE
+   ========================================================= */
 .guess-container {
   display: flex;
-  gap: 8px;
-  margin-top: 20px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
 }
 
 input {
-  flex-grow: 1;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #334155;
-  background-color: #0f172a;
-  color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-main);
   font-size: 1rem;
 }
 
 input:focus {
-  outline: 2px solid #4dd0e1;
+  outline: 2px solid var(--accent);
 }
 
-button#guess-btn {
-  background-color: #4dd0e1;
-  color: #0f172a;
-  border: none;
-  padding: 12px 20px;
-  font-weight: bold;
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.suggestions-dropdown.hidden {
+  display: none;
+}
+
+.suggestion-item {
+  padding: 10px 14px;
+  color: var(--text-main);
+  font-size: 0.95rem;
   cursor: pointer;
+  border-bottom: 1px solid var(--card-border);
 }
 
-button#guess-btn:hover {
-  background-color: #26c6da;
+.suggestion-item:last-child {
+  border-bottom: none;
 }
 
+.suggestion-item:hover {
+  background-color: var(--input-border);
+  color: var(--accent);
+}
+
+.suggestion-item.disabled {
+  text-decoration: line-through;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.suggestion-item.disabled:hover {
+  background-color: transparent;
+}
+
+/* =========================================================
+   FEEDBACK PILL (DURING ACTIVE ROUND)
+   ========================================================= */
 #status-message {
+  display: block;
+  width: fit-content;
+  margin: 10px auto 16px auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
   text-align: center;
+}
+
+#status-message.error {
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  animation: shake 0.3s ease;
+}
+
+#status-message:empty {
+  display: none;
+}
+
+/* =========================================================
+   SCREENPLAY CLUE CARDS
+   ========================================================= */
+.clue-box {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 20px 24px 20px 42px;
+  margin-bottom: 16px;
+  font-family: "Courier Prime", "Courier New", Courier, monospace;
+  position: relative;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.clue-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 28px;
+  width: 1px;
+  background-color: var(--binding-line);
+}
+
+.clue-box::before {
+  content: "";
+  position: absolute;
+  top: 22px;
+  left: 10px;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 35% 35%, #f6d365, #b8860b);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  z-index: 2;
+}
+
+.clue-header-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--card-border);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.clue-tag {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.script-page-no {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: "Courier New", Courier, monospace;
+}
+
+.script-slugline {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--slugline);
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+
+.script-action {
+  color: var(--script-ink);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.script-dialogue-block {
+  margin: 12px auto;
+  max-width: 84%;
+  text-align: center;
+}
+
+.script-character {
+  color: var(--text-main);
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.script-line {
+  color: var(--script-ink);
+  line-height: 1.55;
+  font-style: normal;
+}
+
+.script-metadata {
+  background: var(--input-bg);
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+}
+
+/* Clue 3: Polaroid Evidence */
+.prop-evidence-container {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+.prop-polaroid {
+  background: #fdfbf7;
+  padding: 4px 4px 14px 4px;
+  border-radius: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+  flex-shrink: 0;
+  width: 72px;
+  transform: rotate(-2deg);
+  border: 1px solid #d4cebe;
+}
+
+.prop-polaroid img {
+  width: 100%;
+  height: 72px;
+  object-fit: cover;
+  display: block;
+}
+
+.prop-polaroid-label {
+  color: #555;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.55rem;
+  text-align: center;
+  margin-top: 4px;
   font-weight: bold;
-  margin-top: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================================
+   LOCKED MYSTERY CARD (BEFORE SOLVE)
+   ========================================================= */
+.poster-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--card-bg);
+  border: 1px dashed var(--card-border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-top: 14px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.poster-card.mystery-locked {
+  opacity: 0.85;
+}
+
+.poster-graphic {
+  width: 58px;
+  height: 84px;
+  background: var(--input-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.poster-icon {
+  font-size: 1.6rem;
+  filter: grayscale(0.6);
+}
+
+.poster-status-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  font-weight: bold;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.poster-subtext {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* =========================================================
+   UNIFIED ENDGAME DOSSIER CARD
+   ========================================================= */
+.dossier-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin: 16px 0 20px 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  animation: cardFlip 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dossier-card.victory {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.12), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.dossier-card.defeat {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.1), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.dossier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--card-border);
+  margin-bottom: 14px;
+}
+
+.dossier-header.victory-text { color: #4ade80; }
+.dossier-header.defeat-text { color: #f87171; }
+
+.dossier-body {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.dossier-poster {
+  width: 76px;
+  height: 110px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dossier-details {
+  flex-grow: 1;
+}
+
+.dossier-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.dossier-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.dossier-grid {
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+/* Dossier Countdown & Share Actions */
+.dossier-footer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.countdown-box {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.countdown-timer {
+  color: var(--accent);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+.share-action-btn {
+  width: 100%;
+  padding: 12px 18px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.share-action-btn:hover {
+  background-color: var(--accent);
+  color: #0b0f17;
+  box-shadow: 0 4px 16px rgba(77, 208, 225, 0.3);
+}
+
+.share-action-btn.copied {
+  background-color: #22c55e;
+  border-color: #22c55e;
+  color: #0b0f17;
+}
+
+/* =========================================================
+   ANIMATIONS & UTILITIES
+   ========================================================= */
+@keyframes cardFlip {
+  0% {
+    transform: rotateX(60deg) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.hidden {
+  display: none !important;
 }
