@@ -1,28 +1,22 @@
-// Test puzzle data for both tracks
-const puzzles = {
-  film: {
-    title: "Fargo",
-    clues: [
-      { type: "Atmosphere", text: "EXT. SNOW-COVERED HIGHWAY - NIGHT: A solitary car tows a brand new tan Ciera through a blizzard." },
-      { type: "Dialogue", text: "'I'm not gonna debate you, Jerry. I'm not gonna sit here and debate.'" },
-      { type: "Artifact", text: "A stack of cash buried next to a red plastic ice scraper in deep snow." },
-      { type: "Metadata", text: "1996 · Crime / Dark Comedy · Directed by the Coen Brothers" },
-      { type: "The Signature Beat", text: "'There's more to life than a little money, you know. Don'tcha know that?'" }
-    ]
-  },
-  tv: {
-    title: "The Sopranos",
-    clues: [
-      { type: "Atmosphere", text: "INT. PSYCHIATRIST'S OFFICE - DAY: A man in a polo shirt describes a panic attack triggered by wild ducks leaving his pool." },
-      { type: "Dialogue", text: "'What happened to Gary Cooper? The strong, silent type. That was an American.'" },
-      { type: "Artifact", text: "The back booth of Holsten's diner, a coin jukebox, and a plate of onion rings." },
-      { type: "Metadata", text: "1999–2007 · HBO · Crime Drama · 6 Seasons" },
-      { type: "The Signature Beat", text: "The screen cuts abruptly to total black silence mid-scene while 'Don't Stop Believin' plays." }
-    ]
-  }
+// Catalog pulled directly from films.js and tv.js
+const catalog = {
+  film: filmCatalog,
+  tv:   tvCatalog
 };
 
-// State tracker for both tracks
+// Daily Index Calculator: Days since anchor date % catalog length
+const ANCHOR_DATE = new Date("2026-01-01T00:00:00");
+const today = new Date();
+const diffTime = today - ANCHOR_DATE;
+const dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+// Pick today's puzzle using modulo so it loops through catalog
+const puzzles = {
+  film: catalog.film[dayIndex % catalog.film.length],
+  tv:   catalog.tv[dayIndex % catalog.tv.length]
+};
+
+// State tracker
 const gameState = {
   film: { clueIndex: 0, gameOver: false, message: "", isSuccess: false },
   tv:   { clueIndex: 0, gameOver: false, message: "", isSuccess: false }
@@ -37,8 +31,14 @@ const guessBtn = document.getElementById("guess-btn");
 const statusMsg = document.getElementById("status-message");
 const tabFilm = document.getElementById("tab-film");
 const tabTv = document.getElementById("tab-tv");
+const dateHeader = document.getElementById("daily-date");
+const tracker = document.getElementById("progress-tracker");
+const helpBtn = document.getElementById("help-btn");
 
-// Switch tab listeners
+// Display formatted date
+dateHeader.innerText = `THE DAILY DEDUCTION · ${today.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
+// Tab Switching
 tabFilm.addEventListener("click", () => switchTab("film"));
 tabTv.addEventListener("click", () => switchTab("tv"));
 
@@ -47,7 +47,11 @@ guessInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") handleGuess();
 });
 
-// Render the default view on load
+helpBtn.addEventListener("click", () => {
+  alert("How to Play:\n\n• Guess the film or TV show in as few clues as possible.\n• Each incorrect guess reveals another clue (up to 5 clues).\n• New deduction puzzles drop every day at midnight!");
+});
+
+// Initial render
 updateView();
 
 function switchTab(newTab) {
@@ -67,11 +71,19 @@ function updateView() {
   // Re-render revealed clues
   cluesList.innerHTML = "";
   for (let i = 0; i <= state.clueIndex; i++) {
-    const clue = currentPuzzle.clues[i];
+    const clueText = currentPuzzle.clues[i];
     const box = document.createElement("div");
     box.className = "clue-box";
-    box.innerHTML = `<div class="clue-label">Clue ${i + 1}: ${clue.type}</div><div>${clue.text}</div>`;
+    box.innerHTML = `<div class="clue-label">Clue ${i + 1} of 5</div><div>${clueText}</div>`;
     cluesList.appendChild(box);
+  }
+
+  // Update 5 progress pips
+  tracker.innerHTML = "";
+  for (let i = 0; i < 5; i++) {
+    const pip = document.createElement("div");
+    pip.className = "pip" + (i <= state.clueIndex ? " active" : "");
+    tracker.appendChild(pip);
   }
 
   // Update input and status

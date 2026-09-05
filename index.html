@@ -9,13 +9,25 @@
 <body>
   <div class="container">
     <header>
+      <div class="top-nav">
+        <button id="help-btn" class="icon-btn" title="How to play">?</button>
+      </div>
       <h1>CINEMIND</h1>
-      <p class="subtitle">The Daily Deduction</p>
+      <p id="daily-date" class="date-header">THE DAILY DEDUCTION</p>
 
       <!-- Category Toggle Bar -->
       <div class="category-toggle">
         <button id="tab-film" class="tab-btn active">🎬 Film</button>
         <button id="tab-tv" class="tab-btn">📺 TV</button>
+      </div>
+
+      <!-- 5-Clue Step Tracker -->
+      <div id="progress-tracker" class="tracker">
+        <div class="pip active"></div>
+        <div class="pip"></div>
+        <div class="pip"></div>
+        <div class="pip"></div>
+        <div class="pip"></div>
       </div>
     </header>
 
@@ -30,6 +42,9 @@
 
     <p id="status-message"></p>
   </div>
+
+  <script src="films.js"></script>
+  <script src="tv.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
