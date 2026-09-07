@@ -1,6 +1,7 @@
 const tvCatalog = [
   {
     title: "The Sopranos",
+    poster: "https://image.tmdb.org/t/p/w500/6nTvdP3vC1eqZkK0O26b5c0eJ16.jpg",
     clues: [
       {
         format: "scene",
@@ -31,6 +32,7 @@ const tvCatalog = [
   },
   {
     title: "Breaking Bad",
+    poster: "https://image.tmdb.org/t/p/w500/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
     clues: [
       {
         format: "scene",
@@ -61,6 +63,7 @@ const tvCatalog = [
   },
   {
     title: "Succession",
+    poster: "https://image.tmdb.org/t/p/w1280/z0XiwdrCQ9yVIr4O0pxzaAYRxdW.jpg",
     clues: [
       {
         format: "scene",
@@ -86,6 +89,99 @@ const tvCatalog = [
         format: "signature",
         character: "LOGAN ROY",
         line: "You are not serious people. I love you, but you are not serious people."
+      }
+    ]
+  },
+  {
+    title: "Severance",
+    poster: "https://image.tmdb.org/t/p/w500/pPHpeIqlzp6EGkhSTztTqLi4rP0.jpg",
+    clues: [
+      {
+        format: "scene",
+        slugline: "INT. BOARDROOM TABLE - BRIGHT FLUORESCENT",
+        action: "A woman in corporate business attire awakens facedown on an endless green conference table, having no recollection of her identity or origin."
+      },
+      {
+        format: "dialogue",
+        character: "[SUPERVISOR]",
+        line: "A handshake is available upon request."
+      },
+      {
+        format: "prop",
+        item: "A tiny glass cube encasing a 3D hologram portrait of an executive smiling, awarded as a quarterly refiner perk."
+      },
+      {
+        format: "metadata",
+        year: "2022–PRESENT",
+        genre: "Sci-Fi / Psychological Thriller",
+        details: "Apple TV+ · Directed by Ben Stiller · Created by Dan Erickson"
+      },
+      {
+        format: "signature",
+        character: "MARK SCOUT",
+        line: "Please do not make each other cry. Every time you cry at work, it counts toward your allotment."
+      }
+    ]
+  },
+  {
+    title: "The Wire",
+    poster: "https://image.tmdb.org/t/p/w500/4lbclFySvu0gI51fwsyxBTOm4DqK.jpg",
+    clues: [
+      {
+        format: "scene",
+        slugline: "EXT. WEST BALTIMORE LOW-RISES - DUSK",
+        action: "Young lookouts perch on bright orange sofa cushions left in a weed-choked courtyard, chanting code names whenever cruisers roll past."
+      },
+      {
+        format: "dialogue",
+        character: "[DETECTIVE]",
+        line: "You follow drugs, you get drug addicts and drug dealers. But you start to follow the money, and you don't know where the f*** it's gonna take you."
+      },
+      {
+        format: "prop",
+        item: "A silver trench whistle slung around a man's neck and an open pack of Newport cigarettes held in a scarred hand."
+      },
+      {
+        format: "metadata",
+        year: "2002–2008",
+        genre: "Crime Drama",
+        details: "HBO · 5 Seasons · Created by David Simon"
+      },
+      {
+        format: "signature",
+        character: "OMAR LITTLE",
+        line: "You come at the king, you best not miss."
+      }
+    ]
+  },
+  {
+    title: "Twin Peaks",
+    poster: "https://image.tmdb.org/t/p/w500/1XddvI9y39bV4K5cRkQO0v2hV74.jpg",
+    clues: [
+      {
+        format: "scene",
+        slugline: "INT. RED ROOM - DREAMS",
+        action: "A man sits in an armchair surrounded by floor-to-ceiling crimson velvet curtains atop a hypnotic black-and-white chevron floor."
+      },
+      {
+        format: "dialogue",
+        character: "[SPECIAL AGENT]",
+        line: "Damn fine coffee. And hot!"
+      },
+      {
+        format: "prop",
+        item: "A broken gold heart-shaped best friends necklace buried inside a patch of damp Pacific Northwest soil."
+      },
+      {
+        format: "metadata",
+        year: "1990–1991, 2017",
+        genre: "Mystery / Surreal Horror",
+        details: "Created by David Lynch & Mark Frost"
+      },
+      {
+        format: "signature",
+        character: "THE MAN FROM ANOTHER PLACE",
+        line: "That gum you like is going to come back in style."
       }
     ]
   }

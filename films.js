@@ -1,6 +1,7 @@
 const filmCatalog = [
   {
     title: "Fargo",
+    poster: "https://image.tmdb.org/t/p/w1280/rt7cpEr1uP6RTZykBFhBTcRaKvG.jpg",
     clues: [
       {
         format: "scene",
@@ -32,6 +33,7 @@ const filmCatalog = [
   },
   {
     title: "The Matrix",
+    poster: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
     clues: [
       {
         format: "scene",
@@ -63,6 +65,7 @@ const filmCatalog = [
   },
   {
     title: "Jaws",
+    poster: "https://image.tmdb.org/t/p/w500/lxM6kqilAdpdhqUl2biYp5frUxE.jpg",
     clues: [
       {
         format: "scene",
@@ -88,6 +91,102 @@ const filmCatalog = [
         format: "signature",
         character: "QUINT",
         line: "Japanese submarine slammed two torpedoes into her side, Chief. We was comin' back from the island of Tinian to Leyte... just delivered the bomb."
+      }
+    ]
+  },
+  {
+    title: "No Country for Old Men",
+    poster: "https://image.tmdb.org/t/p/w500/kVGqDYqC0YnUjqV898vS4j5Yf3r.jpg",
+    clues: [
+      {
+        format: "scene",
+        slugline: "EXT. DESERT BASIN - DAY",
+        action: "A hunter surveys a circle of bullet-riddled pickup trucks through heavy binoculars. Dead pit bulls and men lie sprawled in bloodied dust."
+      },
+      {
+        format: "dialogue",
+        character: "[SHADOWY FIGURE]",
+        line: "What's the most you ever lost on a coin toss?"
+      },
+      {
+        format: "prop",
+        item: "A heavy, cylindrical steel cattle gun connected by thick black hose to a portable compressed air tank.",
+        image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        format: "metadata",
+        year: "2007",
+        genre: "Neo-Western / Crime Thriller",
+        details: "Directed by Joel & Ethan Coen · Adapted from Cormac McCarthy"
+      },
+      {
+        format: "signature",
+        character: "ANTON CHIGURH",
+        line: "If the rule you followed brought you to this, of what use was the rule?"
+      }
+    ]
+  },
+  {
+    title: "Pulp Fiction",
+    poster: "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
+    clues: [
+      {
+        format: "scene",
+        slugline: "INT. COFFEE SHOP - MORNING",
+        action: "A young couple sit across from each other in a vinyl booth, calmly discussing the logistical advantages of robbing restaurants over liquor stores."
+      },
+      {
+        format: "dialogue",
+        character: "[HITMAN]",
+        line: "You know what they call a Quarter Pounder with Cheese in Paris?"
+      },
+      {
+        format: "prop",
+        item: "A worn black leather combination briefcase that casts a warm, golden luminescence across anyone who opens it.",
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        format: "metadata",
+        year: "1994",
+        genre: "Crime / Black Comedy",
+        details: "Directed by Quentin Tarantino · Palme d'Or Winner"
+      },
+      {
+        format: "signature",
+        character: "JULES WINNFIELD",
+        line: "The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men."
+      }
+    ]
+  },
+  {
+    title: "Blade Runner 2049",
+    poster: "https://image.tmdb.org/t/p/w500/aMpyrCizvSdc0UIMbe9KnBpFTRi.jpg",
+    clues: [
+      {
+        format: "scene",
+        slugline: "EXT. PROTEIN FARM - DUSK",
+        action: "A black spinner hovers through dense grey mist, touching down outside a colossal dome filled with steaming troughs of larvae."
+      },
+      {
+        format: "dialogue",
+        character: "[OFFICER]",
+        line: "I have memories, but they're not real. Just implants, right?"
+      },
+      {
+        format: "prop",
+        item: "A small, hand-carved wooden toy horse with the date 6-10-21 stamped into its underside.",
+        image: "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        format: "metadata",
+        year: "2017",
+        genre: "Sci-Fi / Neo-Noir",
+        details: "Directed by Denis Villeneuve · Cinematography by Roger Deakins"
+      },
+      {
+        format: "signature",
+        character: "OFFICER K",
+        line: "Cells. Interlinked. Within cells interlinked. Never close to the baseline."
       }
     ]
   }

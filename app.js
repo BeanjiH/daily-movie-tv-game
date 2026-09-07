@@ -42,7 +42,11 @@ function loadSavedState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState;
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return {
+      film: { ...defaultState.film, ...(parsed.film || {}) },
+      tv:   { ...defaultState.tv, ...(parsed.tv || {}) }
+    };
   } catch (e) {
     console.error("Failed to load local storage state:", e);
     return defaultState;
@@ -51,9 +55,18 @@ function loadSavedState() {
 
 function persistState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+    const existingRaw = localStorage.getItem(STORAGE_KEY);
+    const existing = existingRaw ? JSON.parse(existingRaw) : {};
+    
+    const toSave = {
+      ...existing,
+      [activeTab]: gameState[activeTab]
+    };
+    
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    console.log(`[CINEMIND] Wrote to storage key "${STORAGE_KEY}":`, toSave);
   } catch (e) {
-    console.error("Failed to persist state:", e);
+    console.error("[CINEMIND] LocalStorage write failed:", e);
   }
 }
 
@@ -319,11 +332,16 @@ function updateView() {
     }
   }
 
-  // Hide standalone status pill during game over (dossier card handles end message)
+  // Message Pill Handling
   if (state.gameOver) {
     statusMsg.className = "hidden";
     statusMsg.innerText = "";
   } else {
+    // If returning to a partially played game, summarize previous wrong guesses
+    if (!state.message && state.guesses.length > 0) {
+      const lastGuess = state.guesses[state.guesses.length - 1];
+      state.message = `"${lastGuess}" was incorrect. Clue ${state.clueIndex + 1} unlocked.`;
+    }
     statusMsg.innerText = state.message;
     statusMsg.className = state.message ? "error" : "";
   }
@@ -352,7 +370,7 @@ function updateView() {
 
         <div class="dossier-footer">
           <div class="countdown-box">
-            ${isArchiveMode ? 'VAULT ARCHIVE' : `NEXT CASE IN <span id="countdown-display" class="countdown-timer">${getTimeUntilMidnight()}</span>`}
+            ${isArchiveMode ? `VAULT ARCHIVE · CASE #${activeDayIndex}` : `NEXT CASE IN <span id="countdown-display" class="countdown-timer">${getTimeUntilMidnight()}</span>`}
           </div>
           <button id="share-btn" class="share-action-btn" onclick="copyShareScore()">
             <span>SHARE RESULT</span>
@@ -459,6 +477,7 @@ function handleGuess(userGuess) {
   if (userGuess.toLowerCase() === puzzle.title.toLowerCase()) {
     state.isSuccess = true;
     state.gameOver = true;
+    state.message = "";
   } else {
     if (state.clueIndex < puzzle.clues.length - 1) {
       state.clueIndex++;
@@ -467,10 +486,11 @@ function handleGuess(userGuess) {
     } else {
       state.isSuccess = false;
       state.gameOver = true;
+      state.message = "";
     }
   }
 
-  // Persist current day/case progress immediately
+  // Save to the exact day currently being played
   persistState();
 
   updateView();
