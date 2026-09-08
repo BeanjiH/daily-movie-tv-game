@@ -131,6 +131,7 @@ body::before {
   margin: 24px 0 16px;
 }
 
+/* Mechanical Tape-Deck Tabs */
 .tab-btn {
   flex: 1;
   max-width: 150px;
@@ -142,16 +143,42 @@ body::before {
   font-weight: 700;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s ease;
   font-family: 'Courier Prime', monospace;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  
+  /* Creates the 3D physical height of the button */
+  box-shadow: 0 4px 0 var(--line);
+  transform: translateY(0);
+  
+  /* Ultra-fast transition for a snappy, mechanical feel */
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1), 
+              background-color 0.2s ease, 
+              color 0.2s ease;
 }
 
-.tab-btn:hover { background-color: var(--line); color: var(--paper); }
-.tab-btn.active { background-color: var(--amber); color: var(--bg); border-color: var(--amber); }
+.tab-btn:hover { 
+  background-color: var(--line); 
+  color: var(--paper); 
+}
+
+/* The physical push downwards when clicking */
+.tab-btn:active {
+  box-shadow: 0 0px 0 var(--line);
+  transform: translateY(4px);
+}
+
+/* The locked-in state when the tab is selected */
+.tab-btn.active { 
+  background-color: var(--amber); 
+  color: var(--bg); 
+  border-color: var(--amber); 
+  box-shadow: 0 1px 0 #a38036, inset 0 3px 6px rgba(0,0,0,0.3);
+  transform: translateY(3px);
+}
 
 .tracker {
   display: flex;
@@ -428,6 +455,21 @@ input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
   margin-bottom: 10px;
 }
 
+/* Isolates the animation so it only plays when a clue is newly revealed */
+.clue-box.reveal .stamp {
+  opacity: 0;
+  transform: scale(3) rotate(-15deg);
+  /* A custom cubic-bezier creates the heavy "thud and settle" physics */
+  animation: stampSlam 0.35s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+  animation-delay: 0.4s; 
+}
+
+@keyframes stampSlam {
+  0% { opacity: 0; transform: scale(3) rotate(-15deg); }
+  50% { opacity: 1; transform: scale(0.9) rotate(-1deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-2deg); }
+}
+
 /* =========================================================
    LOCKED MYSTERY CARD & DOSSIER
    ========================================================= */
@@ -556,28 +598,53 @@ input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
 .hidden { display: none !important; }
 
 /* =========================================================
+   VAULT PROMO LINK (END GAME CARD)
+   ========================================================= */
+.vault-promo-link,
+.vault-promo-link:visited {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--amber);
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: color 0.2s ease;
+}
+
+.vault-promo-link:hover,
+.vault-promo-link:active {
+  color: var(--paper);
+  text-decoration: none;
+}
+
+/* =========================================================
    HELP MODAL / FIELD AGENT MANUAL
    ========================================================= */
 .modal-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0; /* Shorthand for top, left, right, bottom 0 */
   width: 100vw;
   height: 100vh;
-  background-color: rgba(11, 10, 8, 0.85); /* Deep dark overlay */
-  backdrop-filter: blur(3px); /* Subtly blurs the game behind it */
+  background-color: rgba(11, 10, 8, 0.9);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Stays above absolutely everything */
+  z-index: 9999; /* Forces it above absolutely everything */
   opacity: 1;
-  transition: opacity 0.2s ease;
+  visibility: visible;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .modal-backdrop.hidden {
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  display: flex !important; /* Keep flex layout for transition, hide via opacity/pointer-events */
 }
 
 .modal-case-file {
@@ -595,7 +662,6 @@ input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
   transition: transform 0.2s ease;
 }
 
-/* Subtle amber accent at the top of the file */
 .modal-case-file::before {
   content: "";
   position: absolute;
@@ -651,12 +717,81 @@ input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
   color: var(--paper-dim);
 }
 
-.modal-body p:last-child {
-  margin-bottom: 0;
-}
-
 .modal-highlight {
   color: var(--paper);
   font-weight: 700;
   letter-spacing: 1px;
+}
+
+/* New Exit Button */
+.modal-exit-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background-color: transparent;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.modal-exit-btn:hover {
+  background-color: var(--amber);
+  color: var(--bg);
+}
+
+/* =========================================================
+   MOBILE & TABLET OPTIMIZATION
+   ========================================================= */
+@media (max-width: 600px) {
+  /* Tighten up the main container padding */
+  .container {
+    padding: 16px 12px;
+  }
+
+  /* Scale down the navigation text slightly */
+  .brand-title {
+    font-size: 1.5rem;
+  }
+  .date-header {
+    font-size: 0.7rem;
+  }
+
+  /* Maximize space inside the clue boxes */
+  .clue-box {
+    padding: 16px;
+  }
+  .clue-header-line {
+    font-size: 0.7rem;
+  }
+  .script-dialogue-block {
+    margin-left: 12px;
+    padding-left: 12px;
+  }
+
+  /* Stack the Game Over dossier card vertically */
+  .dossier-body {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+  .dossier-poster {
+    width: 120px;
+    margin-right: 0;
+  }
+  .dossier-details {
+    align-items: center;
+  }
+
+  /* Ensure the search dropdown doesn't overflow the screen */
+  .suggestions-dropdown {
+    width: 100%;
+    left: 0;
+  }
 }

@@ -660,7 +660,7 @@ const filmCatalog = [
     ]
   },
   {
-    title: "WALL·E", poster: "https://image.tmdb.org/t/p/w500/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg",
+    title: "WALL-E", poster: "https://image.tmdb.org/t/p/w500/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg",
     clues: [
       { format: "scene", slugline: "EXT. TOWERING REFUSE MOUNTAINS - DAY", action: "Tread marks wind through towering skyscrapers constructed entirely of compacted garbage cubes beneath a dust-choked reddish sky." },
       { format: "dialogue", character: "AUTO", line: "I cannot allow you to fulfill the directive. Earth will remain quarantined." },

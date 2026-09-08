@@ -1239,7 +1239,7 @@ const tvCatalog = [
       { format: "dialogue", character: "Frank Underwood", line: "Power is a lot like real estate. It's all about location, location, location. The closer you are to the source, the higher your property value." },
       { format: "prop", item: "A heavy collegiate signet ring used to rap two distinctive double-taps against mahogany desk corners." },
       { format: "metadata", year: "2013–2018", genre: "Drama", details: "Netflix · 6 Seasons · Created by Beau Willimon" },
-      { format: "signature", character: "FRANK UNDERWOOD", line: "There are two kinds of pain. The sort of pain that makes you strong, or useless pain." }
+      { format: "signature", character: "FRANK UNDERWOOD", line: "There are two kinds of pain. The sort of pain that makes you strong, or useless pain. The sort of pain that's only suffering. I have no patience for useless things." }
     ]
   },
   {

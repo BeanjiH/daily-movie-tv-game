@@ -149,8 +149,15 @@ const DOM = {
   dateHeader: document.getElementById("daily-date"),
   helpBtn: document.getElementById("help-btn"),
   helpModal: document.getElementById("help-modal"),
-  closeModalBtn: document.getElementById("close-modal-btn")
+  closeModalBtn: document.getElementById("close-modal-btn"),
+  closeModalActionBtn: document.getElementById("close-modal-action-btn")
 };
+
+if (DOM.closeModalActionBtn) {
+  DOM.closeModalActionBtn.addEventListener("click", () => {
+    DOM.helpModal.classList.add("hidden");
+  });
+}
 
 // Date Header setup
 if (isArchiveMode) {
@@ -369,6 +376,12 @@ function updateUI(triggerRevealAnimation = false) {
     if (state.gameOver) {
       const grid = Array.from({ length: 5 }).map((_, i) => (state.isSuccess && i === state.clueIndex) ? "🟩 " : (i <= state.clueIndex ? "🟥 " : "⬛ ")).join("").trim();
       DOM.posterCard.className = `dossier-card ${state.isSuccess ? 'victory' : 'defeat'}`;
+      
+      // Determine Vault prompt based on current mode
+      const vaultPrompt = !isArchiveMode 
+        ? `<a href="vault.html" class="vault-promo-link">ACCESS THE VAULT TO CRACK PAST CASES ➔</a>`
+        : `<a href="vault.html" class="vault-promo-link">➔ RETURN TO THE VAULT</a>`;
+
       DOM.posterCard.innerHTML = `
         <div class="dossier-header ${state.isSuccess ? 'victory-text' : 'defeat-text'}">
           <span>${state.isSuccess ? '✓ CASE SOLVED' : '✕ CASE UNRESOLVED'}</span>
@@ -385,6 +398,7 @@ function updateUI(triggerRevealAnimation = false) {
         <div class="dossier-footer">
           <div class="countdown-box">${isArchiveMode ? `VAULT ARCHIVE · CASE #${activeDayIndex}` : `NEXT CASE IN <span id="countdown-display" class="countdown-timer"></span>`}</div>
           <button id="share-btn" class="share-action-btn" onclick="copyShareScore()"><span>SHARE RESULT</span><span>${grid}</span></button>
+          ${vaultPrompt}
         </div>
       `;
     } else {
