@@ -1,0 +1,6 @@
+node_modules/
+.env
+tmdb-test-output.json
+generated-batch.json
+audit.html
+generator.js

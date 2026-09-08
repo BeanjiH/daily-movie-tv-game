@@ -250,18 +250,6 @@ function formatClueHTML(clue) {
   }
 
   if (clue.format === "prop") {
-    if (clue.image) {
-      return `
-        <div class="script-slugline">INSERT:</div>
-        <div class="prop-evidence-container">
-          <div class="prop-polaroid">
-            <img src="${clue.image}" alt="Prop evidence" />
-            <div class="prop-polaroid-label">PROP #03</div>
-          </div>
-          <div class="script-action">${clue.item}</div>
-        </div>
-      `;
-    }
     return `
       <div class="script-slugline">INSERT:</div>
       <div class="script-action">${clue.item}</div>
