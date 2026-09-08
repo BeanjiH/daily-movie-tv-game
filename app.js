@@ -271,7 +271,11 @@ function executeSelection(title) {
 
 function formatClueHTML(clue) {
   if (clue.format === "scene") {
-    return `<div class="script-slugline">${clue.slugline}</div><div class="script-action">${clue.action}</div>`;
+    return `
+      <div class="scene-marker">LOCATION REPORT //</div>
+      <div class="script-slugline highlighted-text">${clue.slugline}</div>
+      <div class="script-action">${clue.action}</div>
+    `;
   }
   if (clue.format === "dialogue") {
     return `
@@ -291,7 +295,10 @@ function formatClueHTML(clue) {
     `;
   }
   if (clue.format === "prop") {
-    return `<div class="script-slugline">INSERT:</div><div class="script-action">${clue.item}</div>`;
+    return `
+      <div class="evidence-tag">EXHIBIT A : PHYSICAL EVIDENCE</div>
+      <div class="script-action prop-text">${clue.item}</div>
+    `;
   }
   if (clue.format === "metadata") {
     return `

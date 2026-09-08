@@ -390,22 +390,36 @@ input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
   font-size: 0.95rem;
 }
 
-/* Character Redaction Bar[cite: 1] */
-/* Character Redaction Bar */
-.char-redact {
+.char-wrap {
   text-align: center;
-  margin: 0 auto 10px;
-  display: inline-block;
-  background: var(--redact);
-  color: var(--redact);
-  padding: 4px 16px;
-  letter-spacing: 2px;
-  font-size: 12px;
-  user-select: none;
-  width: fit-content; /* Stops the bar from stretching full width */
-  min-width: 150px; /* Ensures short names still look like a proper redaction block */
+  margin-bottom: 12px;
 }
-.char-wrap { text-align: center; }
+
+.char-redact {
+  position: relative;
+  display: inline-block;
+  background-color: #0b0a08; /* Matches your background ink */
+  color: transparent;
+  padding: 4px 24px;
+  user-select: none;
+  border-radius: 2px;
+  letter-spacing: 1px;
+}
+
+/* Stamps the mechanical text directly over the redaction bar */
+.char-redact::after {
+  content: "[REDACTED]";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper-dim);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
 
 .script-dialogue-block {
   margin: 12px auto;
@@ -794,4 +808,49 @@ input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
     width: 100%;
     left: 0;
   }
+}
+/* =========================================================
+   CLUE 1: SCENE (LOCATION REPORT)
+   ========================================================= */
+.scene-marker {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.75rem;
+  color: var(--amber);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+
+.highlighted-text {
+  display: inline-block;
+  background-color: rgba(217, 160, 91, 0.15); /* Faint amber highlight ink */
+  border-bottom: 2px solid var(--amber); /* Thick marker underline */
+  padding: 2px 6px;
+  margin: 0 0 12px -6px; /* Offset slightly to the left to envelop text */
+  border-radius: 2px;
+}
+
+/* =========================================================
+   CLUE 3: PROP (EXHIBIT TAG)
+   ========================================================= */
+.evidence-tag {
+  display: inline-block;
+  background-color: var(--stamp-red);
+  color: var(--bg);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.5); /* Tag stitching */
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.4);
+  transform: rotate(-1.5deg); /* Slight physical tilt */
+  margin-bottom: 14px;
+}
+
+.prop-text {
+  border-left: 2px dashed var(--paper-dim);
+  padding-left: 14px;
+  font-style: italic; /* Makes it read like an added investigative note */
+  color: var(--paper);
 }
