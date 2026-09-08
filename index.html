@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CINEMIND</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
@@ -23,25 +25,12 @@
 
         <!-- Center: Branding -->
         <div class="nav-center">
-          <h1 class="brand-title">CINEMIND</h1>
+          <div class="brand-title">CINE<span>MIND</span></div>
           <p id="daily-date" class="date-header">THE DAILY DEDUCTION</p>
         </div>
 
         <!-- Right: Utility Controls -->
         <div class="nav-right">
-          <button id="theme-btn" class="nav-btn icon-only" title="Toggle theme" aria-label="Toggle Theme">
-            <svg id="theme-icon" class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-          </button>
           <button id="help-btn" class="nav-btn icon-only" title="How to play" aria-label="How to play">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -65,7 +54,7 @@
     <!-- Mystery Poster Card (Hidden during play, reveals on game over) -->
     <div id="poster-card" class="poster-card mystery-locked">
       <div class="poster-graphic">
-        <span class="poster-icon">🎬</span>
+        <span class="poster-icon">🔒</span>
       </div>
       <div class="poster-info">
         <div class="poster-status-label">CLASSIFIED PRODUCTION</div>
@@ -79,14 +68,44 @@
         <input type="text" id="guess-input" placeholder="Search & select a title..." autocomplete="off">
         <div id="suggestions-list" class="suggestions-dropdown hidden"></div>
       </div>
+      <button id="skip-btn" class="skip-action-btn" title="Skip this clue">SKIP</button>
     </div>
 
     <p id="status-message"></p>
 
     <!-- Clues list now renders underneath, newest clue first -->
     <div id="clues-list"></div>
+    
+    <footer class="app-footer">
+      <p>A new classified production unlocks every day at midnight.</p>
+      <p>Data and poster artwork provided by <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TMDB</a>.</p>
+    </footer>
   </div>
 
+  <!-- ==========================================
+       HELP MODAL / FIELD AGENT MANUAL
+       ========================================== -->
+  <div id="help-modal" class="modal-backdrop hidden">
+    <div class="modal-case-file">
+      <div class="modal-header">
+        <h2>FIELD AGENT MANUAL</h2>
+        <button id="close-modal-btn" class="modal-close-btn" title="Close File">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><span class="modal-highlight">THE OBJECTIVE:</span> Deduce the classified production in 5 clues or less. You can switch between active investigations using the <strong>Film</strong> and <strong>TV</strong> tabs at the top.</p>
+        
+        <p><span class="modal-highlight">THE EVIDENCE:</span> You begin with a single Scene description. Incorrect guesses (or skipping) will declassify further evidence: Dialogue, Props, Metadata, and finally, the Signature quote.</p>
+        
+        <p><span class="modal-highlight">REDACTIONS:</span> Character names in early dialogue clues are strictly redacted (represented by black bars) to protect the innocent. They are only unsealed on the final clue.</p>
+        
+        <p><span class="modal-highlight">THE VAULT:</span> Missed an assignment? Access The Vault in the top left to review the contact logs and crack the last 50 archived cases.</p>
+        
+        <p><span class="modal-highlight">NEW CASES:</span> A new classified production drops onto your desk every night at midnight local time.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script src="films.js"></script>
   <script src="tv.js"></script>
   <script src="titles-film.js"></script>
