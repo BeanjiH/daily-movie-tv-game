@@ -1,20 +1,21 @@
-const ANCHOR_DATE = new Date("2026-01-01T00:00:00");
+const ANCHOR_DATE = new Date("2026-07-21T00:00:00");
 const today = new Date();
 const diffTime = today - ANCHOR_DATE;
 const currentDayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
 const catalog = {
-  film: filmCatalog,
-  tv:   tvCatalog
+  film: typeof filmCatalog !== 'undefined' ? filmCatalog : [],
+  tv:   typeof tvCatalog !== 'undefined' ? tvCatalog : []
 };
 
 let activeTab = "film";
 
 // DOM Elements
 const sheetContainer = document.getElementById("contact-sheet");
-const archiveStat = document.getElementById("archive-stat");
 const tabFilmBtn = document.getElementById("tab-film-btn");
 const tabTvBtn = document.getElementById("tab-tv-btn");
+const statFilmEl = document.getElementById("stat-film");
+const statTvEl = document.getElementById("stat-tv");
 
 // Global Theme
 const savedTheme = localStorage.getItem("cinemind-theme") || "dark";
@@ -44,24 +45,50 @@ function getStoredDayState(day) {
   }
 }
 
+// =========================================================
+// VAULT STATS CALCULATOR
+// =========================================================
+function updateVaultStats() {
+  const TOTAL_DAYS = Math.min(50, currentDayIndex + 1);
+  let filmCleared = 0;
+  let tvCleared = 0;
+
+  for (let i = 0; i < TOTAL_DAYS; i++) {
+    const day = currentDayIndex - i;
+    try {
+      const raw = localStorage.getItem(`cinemind_state_day_${day}`);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.film && parsed.film.isSuccess) filmCleared++;
+        if (parsed.tv && parsed.tv.isSuccess) tvCleared++;
+      }
+    } catch (e) {
+      // Fail silently for corrupted individual saves
+    }
+  }
+
+  if (statFilmEl) statFilmEl.innerText = filmCleared;
+  if (statTvEl) statTvEl.innerText = tvCleared;
+}
+
 function renderContactSheet() {
   sheetContainer.innerHTML = "";
   sheetContainer.className = `contact-sheet theme-${activeTab}`;
   
   const catList = catalog[activeTab];
-  let playedCount = 0;
   const TOTAL_DAYS = Math.min(50, currentDayIndex + 1);
 
   for (let i = 0; i < TOTAL_DAYS; i++) {
     const day = currentDayIndex - i;
+    // Fallback if catalog is missing entries
+    if (!catList || catList.length === 0) continue; 
+    
     const puzzle = catList[day % catList.length];
     const state = getStoredDayState(day);
 
     const isCompleted = Boolean(state && state.gameOver);
     const isSuccess = Boolean(state && state.isSuccess);
     const scoreText = isSuccess ? `${state.clueIndex + 1}/5` : "X/5";
-
-    if (isCompleted) playedCount++;
 
     const dateObj = new Date(ANCHOR_DATE);
     dateObj.setDate(dateObj.getDate() + day);
@@ -134,9 +161,8 @@ function renderContactSheet() {
 
     sheetContainer.appendChild(frame);
   }
-
-  archiveStat.innerText = `ARCHIVE ${playedCount}/${TOTAL_DAYS} LOGGED`;
 }
 
 // Initial render
+updateVaultStats();
 renderContactSheet();

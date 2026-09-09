@@ -10,22 +10,21 @@
 </head>
 <body>
   <div class="container">
-    <header class="app-header">
+<header class="app-header">
       <!-- 3-Column Balanced Navigation Grid -->
       <div class="top-nav-grid">
-        <!-- Left: Vault Entry -->
+        <!-- Left: Vault Entry (Icon-only to balance the layout) -->
         <div class="nav-left">
-          <a href="vault.html" class="nav-btn vault-link" title="The Vault (Archived Cases)">
+          <a href="vault.html" class="nav-btn icon-only" title="The Vault (Archived Cases)" aria-label="Vault">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
             </svg>
-            <span class="vault-btn-label">VAULT</span>
           </a>
         </div>
 
         <!-- Center: Branding -->
         <div class="nav-center">
-          <div class="brand-title">CINE<span>MIND</span></div>
+          <h1 class="brand-title">CINE<span class="brand-accent">MIND</span></h1>
           <p id="daily-date" class="date-header">THE DAILY DEDUCTION</p>
         </div>
 
@@ -40,16 +39,21 @@
           </button>
         </div>
       </div>
-
-      <!-- Category Toggle Bar -->
-      <div class="category-toggle">
-        <button id="tab-film" class="tab-btn active">🎬 Film</button>
-        <button id="tab-tv" class="tab-btn">📺 TV</button>
-      </div>
-
-      <!-- 5-Clue Step Tracker -->
-      <div id="progress-tracker" class="tracker"></div>
     </header>
+
+    <!-- Thematic Vault Prompt -->
+    <div class="cold-case-prompt">
+      ACCESS <a href="vault.html">THE VAULT</a> TO SOLVE COLD CASES
+    </div>
+
+    <!-- Category Toggle Bar (Now safely outside the header's flex row) -->
+    <div class="category-toggle">
+      <button id="tab-film" class="tab-btn active">🎬 Film</button>
+      <button id="tab-tv" class="tab-btn">📺 TV</button>
+    </div>
+
+    <!-- 5-Clue Step Tracker -->
+    <div id="progress-tracker" class="tracker"></div>
 
     <!-- Mystery Poster Card (Hidden during play, reveals on game over) -->
     <div id="poster-card" class="poster-card mystery-locked">

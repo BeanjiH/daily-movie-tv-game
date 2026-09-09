@@ -9,10 +9,32 @@
 }
 
 .vault-top-bar {
+  padding-top: 32px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
   margin-bottom: 24px;
+}
+
+.vault-stats-centered {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.85rem;
+  color: var(--paper-dim);
+  margin: 32px auto 24px auto;
+  padding: 16px 0;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+  max-width: 480px;
+  letter-spacing: 1px;
+}
+
+.stat-highlight {
+  color: var(--amber);
+  font-weight: 700;
+}
+
+.stat-divider {
+  margin: 0 16px;
+  color: var(--line);
 }
 
 .case-room-btn {
@@ -198,14 +220,23 @@
 }
 
 .wax-stamp {
-  display: inline-block;
-  font-family: 'Special Elite', cursive;
-  font-size: 0.7rem;
+  display: inline-block !important;
+  width: fit-content !important; 
+  align-self: flex-start !important; 
+  background: transparent !important; 
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 4px 8px;
-  border-radius: 2px;
-  margin-top: 6px;
+  border: 2px solid;
+  border-radius: 3px 8px 4px 6px / 5px 3px 7px 4px; 
+  opacity: 0.85;
+  
+  /* Buffer margins to prevent the rotated corners from being clipped */
+  margin-top: 8px !important; 
+  margin-bottom: 4px !important; 
 }
 
 .wax-stamp.solved {
@@ -301,4 +332,90 @@
     grid-template-columns: 1fr;
     gap: 12px;
   }
+}
+
+/* =========================================================
+   TEXT OVERFLOW & WRAPPING FIXES
+   ========================================================= */
+
+.frame-info {
+  /* Crucial flexbox fix: prevents child text from pushing the container wider than the screen */
+  min-width: 0; 
+  flex: 1;
+}
+
+.frame-title {
+  /* Allow text to wrap naturally */
+  white-space: normal;
+  overflow-wrap: break-word;
+  
+  /* Restrict to a maximum of 2 lines to maintain uniform card heights */
+display: -webkit-box;
+-webkit-box-orient: vertical;
+overflow: hidden;
+
+/* Provide both standard and prefixed line-clamp to clear the warning */
+-webkit-line-clamp: 2;
+line-clamp: 2;
+
+line-height: 1.2;
+padding-right: 12px;
+}
+
+/* Ensure the top metadata row doesn't get pushed off-screen either */
+.edge-code {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.edge-code span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+/* =========================================================
+   VAULT COHESION & STAMP UNIFICATION
+   ========================================================= */
+
+/* 1. Remove the Cyan TV Code */
+.edge-code.tv-code,
+.edge-code.tv-code span {
+  color: var(--paper-dim) !important; /* Mutes the U-MATIC and Timecode to match the vintage palette */
+}
+
+/* 2. Convert Status Tags into Outlined Rubber Stamps */
+.wax-stamp {
+  display: inline-block !important;
+  background: transparent !important; /* Strips out the solid generic fill */
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 2px solid;
+  border-radius: 3px 8px 4px 6px / 5px 3px 7px 4px; /* Asymmetrical hand-stamped shape */
+  opacity: 0.85;
+}
+
+/* Assign specific ink colors and subtle physical rotations */
+.wax-stamp.solved {
+  color: #4ade80 !important; /* Victory green */
+  border-color: #4ade80 !important;
+  transform: rotate(-1.5deg);
+}
+
+.wax-stamp.failed {
+  color: var(--stamp-red) !important;
+  border-color: var(--stamp-red) !important;
+  transform: rotate(1deg);
+}
+
+.wax-stamp.sealed {
+  color: var(--paper-dim) !important;
+  border-color: var(--line) !important;
+  transform: rotate(-1deg);
 }

@@ -1,856 +1,962 @@
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&display=swap'); 
 
-:root {
-  --bg: #161310;
-  --bg-raised: #1E1A15;
-  --paper: #EDE3CC;
-  --paper-dim: #C9BFA4;
-  --stamp-red: #B23A32;
-  --amber: #C9A34E;
-  --redact: #0B0A08;
-  --line: #3A342A;
-}
+:root { 
+  --bg: #161310; 
+  --bg-raised: #1E1A15; 
+  --paper: #EDE3CC; 
+  --paper-dim: #C9BFA4; 
+  --stamp-red: #B23A32; 
+  --amber: #C9A34E; 
+  --redact: #0B0A08; 
+  --line: #3A342A; 
+} 
 
-body {
-  margin: 0;
-  background: var(--bg);
-  background-image:
-    radial-gradient(ellipse at 30% 0%, rgba(201,163,78,0.06), transparent 60%),
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 2px);
-  color: var(--paper);
-  font-family: 'Courier Prime', monospace;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px 16px;
-  box-sizing: border-box;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-/* =========================================================
-   CINEMATIC FILM GRAIN OVERLAY
-   ========================================================= */
-/* Change ::after to ::before so it renders underneath the UI */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.06;
-}
-
-.container {
-  position: relative;
-  z-index: 10; /* Forces the game boards to float above the background grain */
-  max-width: 480px;
-  width: 100%;
-}
-
-/* =========================================================
-   TOP NAVIGATION & HEADER
-   ========================================================= */
-.app-header {
-  margin-bottom: 24px;
-}
-
-.top-nav-grid {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 0 20px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.nav-left { display: flex; justify-content: flex-start; align-items: center; }
-.nav-center { text-align: center; white-space: nowrap; }
-.nav-right { display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
-
-.nav-btn, .nav-btn:visited, .nav-btn:active {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
-  color: var(--paper-dim);
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  user-select: none;
-  height: 38px; /* Slightly taller for a tactile feel */
-}
-
-.nav-btn.icon-only { width: 38px; padding: 0; }
-.nav-btn.vault-link { padding: 0 14px; gap: 8px; }
-.nav-btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(201,163,78,0.08); }
-
-.nav-icon { width: 17px; height: 17px; stroke: currentColor; flex-shrink: 0; display: block; }
-
-.vault-btn-label {
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.brand-title {
-  margin: 0;
-  font-family: 'Special Elite', cursive;
-  font-size: 38px;
-  letter-spacing: 4px;
-  color: var(--paper);
-  line-height: 1;
-  text-align: center;
-}
-.brand-title span { color: var(--stamp-red); }
-
-.date-header {
-  font-family: 'Courier Prime', monospace;
-  color: var(--paper-dim);
-  margin: 8px 0 0 0;
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-weight: 600;
-  text-align: center;
-}
-
-/* =========================================================
-   CATEGORY TOGGLE & TRACKER
-   ========================================================= */
-.category-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin: 24px 0 16px;
-}
-
-/* Mechanical Tape-Deck Tabs */
-.tab-btn {
-  flex: 1;
-  max-width: 150px;
-  padding: 12px 14px;
-  background-color: var(--bg-raised);
-  border: 1px solid var(--line);
-  color: var(--paper-dim);
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Courier Prime', monospace;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  
-  /* Creates the 3D physical height of the button */
-  box-shadow: 0 4px 0 var(--line);
-  transform: translateY(0);
-  
-  /* Ultra-fast transition for a snappy, mechanical feel */
-  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1), 
-              background-color 0.2s ease, 
-              color 0.2s ease;
-}
-
-.tab-btn:hover { 
-  background-color: var(--line); 
+body { 
+  margin: 0; 
+  background: var(--bg); 
+  background-image: 
+    radial-gradient(ellipse at 30% 0%, rgba(201,163,78,0.06), transparent 60%), 
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 2px); 
   color: var(--paper); 
-}
+  font-family: 'Courier Prime', monospace; 
+  display: flex; 
+  justify-content: center; 
+  min-height: 100vh; 
+  padding: 20px 16px; 
+  box-sizing: border-box; 
+  transition: background 0.3s ease, color 0.3s ease; 
+} 
 
-/* The physical push downwards when clicking */
-.tab-btn:active {
-  box-shadow: 0 0px 0 var(--line);
-  transform: translateY(4px);
-}
+/* ========================================================= 
+   CINEMATIC FILM GRAIN OVERLAY 
+   ========================================================= */ 
+body::before { 
+  content: ""; 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100vw; 
+  height: 100vh; 
+  pointer-events: none; 
+  z-index: 0; 
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); 
+  opacity: 0.06; 
+} 
 
-/* The locked-in state when the tab is selected */
-.tab-btn.active { 
+.container { 
+  position: relative; 
+  z-index: 10; 
+  max-width: 480px; 
+  width: 100%; 
+} 
+
+/* ========================================================= 
+   TOP NAVIGATION & HEADER 
+   ========================================================= */ 
+.app-header { 
+  padding-top: 32px; 
+  margin-bottom: 24px; 
+} 
+
+.top-nav-grid { 
+  display: grid; 
+  grid-template-columns: 1fr auto 1fr; 
+  align-items: center; 
+  width: 100%; 
+} 
+
+.nav-left { display: flex; justify-content: flex-start; align-items: center; } 
+.nav-center { display: flex; flex-direction: column; align-items: center; text-align: center; white-space: nowrap; } 
+.nav-right { display: flex; justify-content: flex-end; align-items: center; gap: 8px; } 
+
+.nav-btn, .nav-btn:visited, .nav-btn:active { 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: var(--bg-raised); 
+  border: 1px solid var(--line); 
+  color: var(--paper-dim); 
+  border-radius: 4px; 
+  cursor: pointer; 
+  text-decoration: none; 
+  transition: all 0.2s ease; 
+  user-select: none; 
+  height: 38px; 
+} 
+
+.nav-btn.icon-only { width: 38px; padding: 0; } 
+.nav-btn.vault-link { padding: 0 14px; gap: 8px; } 
+.nav-btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(201,163,78,0.08); } 
+
+.nav-icon { width: 17px; height: 17px; stroke: currentColor; flex-shrink: 0; display: block; } 
+
+.vault-btn-label { 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.75rem; 
+  font-weight: 700; 
+  letter-spacing: 1px; 
+} 
+
+.brand-title { 
+  margin: 0; 
+  font-family: 'Special Elite', cursive; 
+  font-size: 38px; 
+  letter-spacing: 4px; 
+  color: var(--paper); 
+  line-height: 1; 
+  text-align: center; 
+} 
+.brand-title span { color: var(--stamp-red); } 
+
+.date-header { 
+  font-family: 'Courier Prime', monospace; 
+  color: var(--paper-dim); 
+  margin: 8px 0 0 0; 
+  font-size: 11px; 
+  letter-spacing: 3px; 
+  text-transform: uppercase; 
+  font-weight: 600; 
+  text-align: center; 
+} 
+
+/* ========================================================= 
+   CATEGORY TOGGLE & TRACKER 
+   ========================================================= */ 
+.category-toggle { 
+  display: flex; 
+  justify-content: center; 
+  gap: 12px; 
+  margin: 24px 0 16px; 
+} 
+
+/* Mechanical Tape-Deck Tabs */ 
+.tab-btn { 
+  flex: 1; 
+  max-width: 150px; 
+  padding: 12px 14px; 
+  background-color: var(--bg-raised); 
+  border: 1px solid var(--line); 
+  color: var(--paper-dim); 
+  font-size: 0.95rem; 
+  font-weight: 700; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-family: 'Courier Prime', monospace; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px; 
+  box-shadow: 0 4px 0 var(--line); 
+  transform: translateY(0); 
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),  
+              box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1),  
+              background-color 0.2s ease,  
+              color 0.2s ease; 
+} 
+
+.tab-btn:hover {  
+  background-color: var(--line);  
+  color: var(--paper);  
+} 
+
+.tab-btn:active { 
+  box-shadow: 0 0px 0 var(--line); 
+  transform: translateY(4px); 
+} 
+
+/* Locks the Film tab to the original Gold/Amber */ 
+#tab-film.active, 
+#tab-film-btn.active { 
   background-color: var(--amber); 
   color: var(--bg); 
-  border-color: var(--amber); 
-  box-shadow: 0 1px 0 #a38036, inset 0 3px 6px rgba(0,0,0,0.3);
-  transform: translateY(3px);
-}
+  border-color: var(--amber);  
+  box-shadow: 0 1px 0 #a38036, inset 0 3px 6px rgba(0,0,0,0.3); 
+  transform: translateY(3px); 
+} 
 
-.tracker {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin: 14px 0 20px;
-}
+/* Shifts the TV tab to a warm, desaturated Bronze */ 
+#tab-tv.active, 
+#tab-tv-btn.active { 
+  background-color: #9c8362;  
+  border-color: #9c8362; 
+  color: var(--bg); 
+  box-shadow: 0 1px 0 #7a664c, inset 0 3px 6px rgba(0,0,0,0.3); 
+  transform: translateY(3px); 
+} 
 
-.pip {
-  height: 6px;
-  flex: 1;
-  max-width: 45px;
-  background-color: var(--line);
-  border-radius: 2px;
-  transition: background-color 0.25s ease;
-}
+.tracker { 
+  display: flex; 
+  justify-content: center; 
+  gap: 6px; 
+  margin: 14px 0 20px; 
+} 
 
-.pip.current { background-color: var(--amber); }
-.pip.failed { background-color: var(--stamp-red); }
-.pip.correct { background-color: #4ade80; }
+.pip { 
+  height: 6px; 
+  flex: 1; 
+  max-width: 45px; 
+  background-color: var(--line); 
+  border-radius: 2px; 
+  transition: background-color 0.25s ease; 
+} 
 
-/* =========================================================
-   SEARCH BAR & SKIP BUTTON
-   ========================================================= */
-.guess-container {
-  display: flex;
-  margin-top: 14px;
-  margin-bottom: 6px;
-  position: relative;
-}
+.pip.current { background-color: var(--amber); } 
+.pip.failed { background-color: var(--stamp-red); } 
+.pip.correct { background-color: #4ade80; } 
 
-.input-action-row { display: flex; gap: 10px; width: 100%; }
-.input-wrapper { flex-grow: 1; position: relative; }
+/* ========================================================= 
+   SEARCH BAR & SKIP BUTTON 
+   ========================================================= */ 
+.guess-container { 
+  display: flex; 
+  margin-top: 14px; 
+  margin-bottom: 6px; 
+  position: relative; 
+} 
 
-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px 14px;
-  border-radius: 4px;
-  border: 1px solid var(--line);
-  background-color: var(--bg-raised);
-  color: var(--paper);
-  font-size: 0.95rem;
-  font-family: 'Courier Prime', monospace;
-}
-input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
+.input-action-row { display: flex; gap: 10px; width: 100%; } 
+.input-wrapper { flex-grow: 1; position: relative; } 
 
-.skip-action-btn {
-  background-color: var(--bg-raised);
-  border: 1px solid var(--line);
-  color: var(--paper-dim);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  padding: 0 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-.skip-action-btn:hover { background-color: var(--line); color: var(--paper); border-color: var(--paper-dim); }
+input { 
+  width: 100%; 
+  box-sizing: border-box; 
+  padding: 12px 14px; 
+  border-radius: 4px; 
+  border: 1px solid var(--line); 
+  background-color: var(--bg-raised); 
+  color: var(--paper); 
+  font-size: 0.95rem; 
+  font-family: 'Courier Prime', monospace; 
+} 
+input:focus { outline: 1px solid var(--amber); border-color: var(--amber); } 
 
-.suggestions-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0; right: 0;
-  background-color: var(--bg-raised);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  max-height: 180px;
-  overflow-y: auto;
-  z-index: 100;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.6);
-}
-.suggestions-dropdown.hidden { display: none; }
-.suggestion-item {
-  padding: 10px 14px;
-  color: var(--paper);
-  font-size: 0.9rem;
-  cursor: pointer;
-  border-bottom: 1px solid var(--line);
-}
-.suggestion-item:last-child { border-bottom: none; }
-.suggestion-item:hover { background-color: var(--line); color: var(--amber); }
-.suggestion-item.disabled { text-decoration: line-through; color: var(--paper-dim); cursor: not-allowed; opacity: 0.5; }
-.suggestion-item.disabled:hover { background-color: transparent; }
+.skip-action-btn { 
+  background-color: var(--bg-raised); 
+  border: 1px solid var(--line); 
+  color: var(--paper-dim); 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.85rem; 
+  font-weight: 700; 
+  letter-spacing: 1px; 
+  padding: 0 16px; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+  flex-shrink: 0; 
+} 
+.skip-action-btn:hover { background-color: var(--line); color: var(--paper); border-color: var(--paper-dim); } 
 
-/* =========================================================
-   FEEDBACK PILL
-   ========================================================= */
-#status-message {
-  display: block;
-  width: fit-content;
-  margin: 10px auto 16px auto;
-  font-size: 0.85rem;
-  letter-spacing: 0.3px;
-  font-weight: 600;
-  padding: 6px 16px;
-  border-radius: 4px;
-  text-align: center;
-  font-family: 'Courier Prime', monospace;
-}
-#status-message.error {
-  background-color: rgba(178,58,50,0.15);
-  border: 1px solid var(--stamp-red);
-  color: #fca5a5;
-  animation: shake 0.3s ease;
-}
-#status-message:empty { display: none; }
+.suggestions-dropdown { 
+  position: absolute; 
+  top: calc(100% + 4px); 
+  left: 0; right: 0; 
+  background-color: var(--bg-raised); 
+  border: 1px solid var(--line); 
+  border-radius: 4px; 
+  max-height: 180px; 
+  overflow-y: auto; 
+  z-index: 100; 
+  box-shadow: 0 8px 16px rgba(0,0,0,0.6); 
+} 
+.suggestions-dropdown.hidden { display: none; } 
+.suggestion-item { 
+  padding: 10px 14px; 
+  color: var(--paper); 
+  font-size: 0.9rem; 
+  cursor: pointer; 
+  border-bottom: 1px solid var(--line); 
+} 
+.suggestion-item:last-child { border-bottom: none; } 
+.suggestion-item:hover { background-color: var(--line); color: var(--amber); } 
+.suggestion-item.disabled { text-decoration: line-through; color: var(--paper-dim); cursor: not-allowed; opacity: 0.5; } 
+.suggestion-item.disabled:hover { background-color: transparent; } 
 
-/* =========================================================
-   CASE-FILE CLUE CARDS & REDACTION MECHANIC
-   ========================================================= */
+/* ========================================================= 
+   FEEDBACK PILL 
+   ========================================================= */ 
+#status-message { 
+  display: block; 
+  width: fit-content; 
+  margin: 10px auto 16px auto; 
+  font-size: 0.85rem; 
+  letter-spacing: 0.3px; 
+  font-weight: 600; 
+  padding: 6px 16px; 
+  border-radius: 4px; 
+  text-align: center; 
+  font-family: 'Courier Prime', monospace; 
+} 
+#status-message.error { 
+  background-color: rgba(178,58,50,0.15); 
+  border: 1px solid var(--stamp-red); 
+  color: #fca5a5; 
+  animation: shake 0.3s ease; 
+} 
+#status-message:empty { display: none; } 
+
+/* ========================================================= 
+   CASE-FILE CLUE CARDS & REDACTION MECHANIC 
+   ========================================================= */ 
 .clue-box {
   position: relative;
   background: var(--bg-raised);
   border: 1px solid var(--line);
-  margin-bottom: 16px;
-  /* Restored standard padding since the pin is moving to the corner */
-  padding: 20px 22px; 
+  margin-bottom: 16px; 
+  padding: 24px 22px 20px 22px; /* Slightly increased top padding */
+  overflow: visible !important; /* Forces the box not to chop off bleeding stamps */
   font-family: 'Courier Prime', monospace;
   box-shadow: 0 4px 18px rgba(0,0,0,0.4);
 }
 
-/* The Realistic Top-Left Detective Pin */
-.clue-box::after {
-  content: "";
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  /* Creates a sharp, glossy plastic specular highlight */
-  background: radial-gradient(circle at 30% 30%, #ffc2b3 0%, #e53935 25%, #8e0000 70%, #2b0000 100%);
-  /* Multi-layered shadow to create physical height off the paper */
-  box-shadow: 
-    -1px 1px 1px rgba(0, 0, 0, 0.8),         /* Tight contact shadow */
-    -3px 5px 6px rgba(0, 0, 0, 0.5),         /* Mid-range ambient occlusion */
-    -6px 10px 12px -2px rgba(0, 0, 0, 0.4),  /* Long cast shadow from room lighting */
-    inset -1px -2px 3px rgba(0, 0, 0, 0.6);  /* Inner shadow for spherical volume */
-  z-index: 5;
-}
-
-/* The left-edge format color bars */
-.clue-box::before {
-  content: "";
-  position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px;
-}
-.clue-box.format-scene::before { background: var(--amber); }
-.clue-box.format-dialogue::before { background: var(--stamp-red); }
-.clue-box.format-prop::before { background: var(--amber); }
-.clue-box.format-metadata::before { background: var(--paper-dim); }
-.clue-box.format-signature::before { background: var(--stamp-red); }
-
-/* Header adjusted to make room for the corner pin */
-.clue-header-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--paper-dim);
-  margin-bottom: 14px;
-  border-bottom: 1px dashed var(--line);
-  padding-bottom: 8px;
-  padding-left: 24px; /* Pushes the "CLUE X OF 5" text to the right of the pin */
-  font-family: 'Courier Prime', monospace;
-}
-
-.clue-box.reveal .clue-body {
-  overflow: hidden;
-  animation: fadeSlideDown 0.5s ease-out forwards;
-}
-
-@keyframes fadeSlideDown {
-  0% { opacity: 0; transform: translateY(-10px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.clue-header-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--paper-dim);
-  margin-bottom: 14px;
-  border-bottom: 1px dashed var(--line);
-  padding-bottom: 8px;
-  font-family: 'Courier Prime', monospace;
-}
-
-.clue-tag { font-weight: 700; color: var(--amber); }
-.script-page-no { color: var(--paper-dim); }
-
-.script-slugline {
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--paper);
-  margin-bottom: 10px;
-  letter-spacing: 1px;
-}
-
-.script-action {
-  color: var(--paper-dim);
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
-
 .char-wrap {
   text-align: center;
-  margin-bottom: 12px;
+  margin-top: 6px;
+  margin-bottom: 16px;
 }
 
-.char-redact {
-  position: relative;
-  display: inline-block;
-  background-color: #0b0a08; /* Matches your background ink */
-  color: transparent;
-  padding: 4px 24px;
-  user-select: none;
-  border-radius: 2px;
-  letter-spacing: 1px;
+/* The left-edge format color bars */ 
+.clue-box::before { 
+  content: ""; 
+  position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; 
+} 
+.clue-box.format-scene::before { background: var(--amber); } 
+.clue-box.format-dialogue::before { background: var(--stamp-red); } 
+.clue-box.format-prop::before { background: var(--amber); } 
+.clue-box.format-metadata::before { background: var(--paper-dim); } 
+.clue-box.format-signature::before { background: var(--stamp-red); } 
+
+.clue-box.reveal .clue-body { 
+  overflow: hidden; 
+  animation: fadeSlideDown 0.5s ease-out forwards; 
+} 
+
+@keyframes fadeSlideDown { 
+  0% { opacity: 0; transform: translateY(-10px); } 
+  100% { opacity: 1; transform: translateY(0); } 
+} 
+
+.clue-header-line { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  font-size: 10px; 
+  letter-spacing: 2px; 
+  color: var(--paper-dim); 
+  margin-bottom: 14px; 
+  border-bottom: 1px dashed var(--line); 
+  padding-bottom: 8px; 
+  font-family: 'Courier Prime', monospace; 
+} 
+
+.script-page-no { color: var(--paper-dim); } 
+
+.script-slugline { 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  color: var(--paper); 
+  margin-bottom: 10px; 
+  letter-spacing: 1px; 
+} 
+
+.script-action { 
+  color: var(--paper-dim); 
+  line-height: 1.6; 
+  font-size: 0.95rem; 
+} 
+
+.char-wrap { 
+  text-align: center; 
+  margin-bottom: 12px; 
+} 
+
+.char-redact { 
+  position: relative; 
+  display: inline-block; 
+  background-color: #0b0a08; 
+  color: transparent; 
+  padding: 4px 24px; 
+  user-select: none; 
+  border-radius: 2px; 
+  letter-spacing: 1px; 
+} 
+
+.script-dialogue-block { 
+  margin: 12px auto; 
+  max-width: 90%; 
+  text-align: center; 
+} 
+
+.script-character { 
+  color: var(--paper); 
+  font-weight: 700; 
+  letter-spacing: 2px; 
+  margin-bottom: 6px; 
+  font-family: 'Special Elite', cursive; 
+} 
+
+.script-line { 
+  color: var(--paper); 
+  line-height: 1.55; 
+  text-align: center; 
+} 
+.script-line::before, .script-line::after { content: '"'; color: var(--amber); } 
+
+.script-metadata { 
+  background: var(--bg); 
+  border-left: 3px solid var(--amber); 
+  padding: 12px 14px; 
+  font-size: 0.9rem; 
+  color: var(--paper-dim); 
+  line-height: 1.8; 
+} 
+.script-metadata b { color: var(--amber); letter-spacing: 1px; margin-right: 8px; } 
+
+/* Signature / Declassified Stamp Clue */ 
+.clue-box.is-signature { 
+  background: rgba(178,58,50,0.08); 
+  border-color: var(--stamp-red); 
+} 
+
+/* Isolates the animation so it only plays when a clue is newly revealed */ 
+.clue-box.reveal .stamp { 
+  opacity: 0; 
+  transform: scale(3) rotate(-15deg); 
+  animation: stampSlam 0.35s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards; 
+  animation-delay: 0.4s;  
+} 
+
+@keyframes stampSlam { 
+  0% { opacity: 0; transform: scale(3) rotate(-15deg); } 
+  50% { opacity: 1; transform: scale(0.9) rotate(-1deg); } 
+  100% { opacity: 1; transform: scale(1) rotate(-2deg); } 
+} 
+
+/* ========================================================= 
+   LOCKED MYSTERY CARD & DOSSIER 
+   ========================================================= */ 
+.poster-card { 
+  display: flex; 
+  align-items: center; 
+  gap: 16px; 
+  padding: 14px 18px; 
+  margin-top: 14px; 
+  margin-bottom: 12px; 
+  border-radius: 4px; 
+  transition: all 0.3s ease; 
+} 
+
+.poster-card.mystery-locked { 
+  background: linear-gradient(135deg, var(--bg-raised) 0%, var(--bg) 100%); 
+  border: 1px solid var(--line); 
+  position: relative; 
+  overflow: hidden; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4); 
+} 
+
+.poster-card.mystery-locked::before { 
+  content: ""; 
+  position: absolute; top: 0; left: 0; bottom: 0; width: 4px; 
+  background: linear-gradient(to bottom, #b8860b, var(--amber), #b8860b); 
+} 
+
+.poster-graphic { 
+  width: 58px; height: 84px; 
+  background: repeating-linear-gradient(45deg, var(--bg), var(--bg) 4px, var(--bg-raised) 4px, var(--bg-raised) 8px); 
+  border: 1px solid var(--line); 
+  border-radius: 2px; 
+  display: flex; align-items: center; justify-content: center; 
+  flex-shrink: 0; 
+} 
+.poster-icon { font-size: 1.4rem; opacity: 0.5; } 
+
+.poster-status-label { 
+  font-family: 'Special Elite', cursive; 
+  font-size: 0.75rem; 
+  letter-spacing: 2px; 
+  font-weight: 800; 
+  color: var(--amber); 
+  text-transform: uppercase; 
+  margin-bottom: 4px; 
+} 
+.poster-subtext { font-size: 0.85rem; color: var(--paper-dim); line-height: 1.4; } 
+
+/* Endgame Dossier */ 
+.dossier-card { 
+  background: var(--bg-raised); 
+  border: 1px solid var(--line); 
+  border-radius: 4px; 
+  padding: 18px 20px; 
+  margin: 16px 0 20px 0; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+  animation: cardFlip 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+} 
+.dossier-card.victory { border-color: rgba(34, 197, 94, 0.5); } 
+.dossier-card.defeat { border-color: rgba(178,58,50,0.6); } 
+
+.dossier-header { 
+  display: flex; justify-content: space-between; align-items: center; 
+  font-size: 0.75rem; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; 
+  padding-bottom: 8px; /* Reduced from 12px */
+  border-bottom: 1px dashed var(--line); 
+  margin-bottom: 10px; /* Reduced from 14px */
+  font-family: 'Courier Prime', monospace; 
+}
+.dossier-header.victory-text { color: #4ade80; } 
+.dossier-header.defeat-text { color: var(--stamp-red); } 
+
+.dossier-body { display: flex; gap: 16px; align-items: center; } 
+.dossier-poster { 
+  width: 76px; height: 110px; 
+  border-radius: 2px; object-fit: cover; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
+  flex-shrink: 0; border: 1px solid var(--line); 
+} 
+.dossier-title { 
+  font-size: 1.2rem; font-weight: 700; color: var(--paper); margin: 0 0 4px 0; 
+  font-family: 'Special Elite', cursive; letter-spacing: 1px; 
+} 
+.dossier-meta { font-size: 0.8rem; color: var(--paper-dim); margin-bottom: 10px; } 
+.dossier-grid { font-size: 1.1rem; letter-spacing: 3px; line-height: 1; } 
+
+.dossier-footer { 
+  margin-top: 12px; /* Reduced from 16px */
+  padding-top: 12px; /* Reduced from 14px */
+  border-top: 1px dashed var(--line); 
+  display: flex; flex-direction: column; gap: 12px; text-align: center; 
 }
 
-/* Stamps the mechanical text directly over the redaction bar */
-.char-redact::after {
-  content: "[REDACTED]";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--paper-dim);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 2px;
+.countdown-box { 
+  text-align: center; 
+  margin: 10px 0 14px 0; /* Radically reduced from 24px 0 */
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.85rem; 
+  font-weight: 700; 
+  letter-spacing: 2px; 
+  color: var(--paper-dim); 
+  text-transform: uppercase; 
 }
 
-.script-dialogue-block {
-  margin: 12px auto;
-  max-width: 90%;
-  text-align: center;
-}
+.countdown-timer { 
+  display: block; 
+  box-sizing: border-box; 
+  width: 100%; 
+  margin-top: 10px; 
+  padding: 8px 0; 
+  font-size: 1.3rem; 
+  color: var(--amber); 
+  background-color: rgba(0, 0, 0, 0.4); 
+  border: 1px dashed var(--amber); 
+  border-radius: 4px; 
+  letter-spacing: 4px; 
+  text-shadow: 0 0 8px rgba(217, 160, 91, 0.5); 
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8); 
+} 
 
-.script-character {
-  color: var(--paper);
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  font-family: 'Special Elite', cursive;
-}
+.share-action-btn { 
+  width: 100%; padding: 12px 18px; 
+  background-color: var(--bg); border: 1px solid var(--amber); color: var(--amber); 
+  border-radius: 4px; font-weight: 700; font-size: 0.88rem; letter-spacing: 1px; 
+  text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+  gap: 8px; transition: all 0.2s ease; font-family: 'Courier Prime', monospace; 
+} 
+.share-action-btn:hover { background-color: var(--amber); color: var(--bg); } 
+.share-action-btn.copied { background-color: #22c55e; border-color: #22c55e; color: var(--bg); } 
 
-.script-line {
-  color: var(--paper);
-  line-height: 1.55;
-  text-align: center;
-}
-.script-line::before, .script-line::after { content: '"'; color: var(--amber); }
+/* ========================================================= 
+   FOOTER 
+   ========================================================= */ 
+.app-footer { 
+  margin-top: 32px; 
+  padding-top: 20px; 
+  padding-bottom: 24px; 
+  border-top: 1px dashed var(--line); 
+  text-align: center; 
+} 
+.app-footer p { margin: 0 0 6px 0; font-size: 0.75rem; color: var(--paper-dim); letter-spacing: 0.3px; } 
+.app-footer a { color: var(--amber); text-decoration: none; font-weight: 600; } 
+.app-footer a:hover { text-decoration: underline; } 
 
-.script-metadata {
-  background: var(--bg);
-  border-left: 3px solid var(--amber);
-  padding: 12px 14px;
-  font-size: 0.9rem;
-  color: var(--paper-dim);
-  line-height: 1.8;
-}
-.script-metadata b { color: var(--amber); letter-spacing: 1px; margin-right: 8px; }
+@keyframes cardFlip { 
+  0% { transform: rotateX(60deg) scale(0.95); opacity: 0; } 
+  100% { transform: rotateX(0deg) scale(1); opacity: 1; } 
+} 
+@keyframes shake { 
+  0%, 100% { transform: translateX(0); } 
+  25% { transform: translateX(-4px); } 
+  75% { transform: translateX(4px); } 
+} 
+.hidden { display: none !important; } 
 
-/* Signature / Declassified Stamp Clue */
-.clue-box.is-signature {
-  background: rgba(178,58,50,0.08);
-  border-color: var(--stamp-red);
-}
-.stamp {
-  display: inline-block;
-  border: 2px solid var(--stamp-red);
-  color: var(--stamp-red);
-  font-family: 'Special Elite', cursive;
-  letter-spacing: 2px;
-  padding: 2px 10px;
-  font-size: 11px;
-  transform: rotate(-2deg);
-  margin-bottom: 10px;
-}
+/* ========================================================= 
+   VAULT PROMO LINK (END GAME CARD) 
+   ========================================================= */ 
+.vault-promo-link, 
+.vault-promo-link:visited { 
+  display: block; 
+  text-align: center; 
+  margin-top: 20px; 
+  padding-top: 16px; 
+  border-top: 1px dashed var(--line); 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.75rem; 
+  font-weight: 700; 
+  color: var(--amber); 
+  text-decoration: none; 
+  letter-spacing: 1px; 
+  transition: color 0.2s ease; 
+} 
 
-/* Isolates the animation so it only plays when a clue is newly revealed */
-.clue-box.reveal .stamp {
-  opacity: 0;
-  transform: scale(3) rotate(-15deg);
-  /* A custom cubic-bezier creates the heavy "thud and settle" physics */
-  animation: stampSlam 0.35s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
-  animation-delay: 0.4s; 
-}
+.vault-promo-link:hover, 
+.vault-promo-link:active { 
+  color: var(--paper); 
+  text-decoration: none; 
+} 
 
-@keyframes stampSlam {
-  0% { opacity: 0; transform: scale(3) rotate(-15deg); }
-  50% { opacity: 1; transform: scale(0.9) rotate(-1deg); }
-  100% { opacity: 1; transform: scale(1) rotate(-2deg); }
-}
+/* ========================================================= 
+   HELP MODAL / FIELD AGENT MANUAL 
+   ========================================================= */ 
+.modal-backdrop { 
+  position: fixed; 
+  inset: 0; 
+  width: 100vw; 
+  height: 100vh; 
+  background-color: rgba(11, 10, 8, 0.9); 
+  backdrop-filter: blur(4px); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  z-index: 9999; 
+  opacity: 1; 
+  visibility: visible; 
+  transition: opacity 0.2s ease, visibility 0.2s ease; 
+} 
 
-/* =========================================================
-   LOCKED MYSTERY CARD & DOSSIER
-   ========================================================= */
-.poster-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 18px;
-  margin-top: 14px;
-  margin-bottom: 12px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
+.modal-backdrop.hidden { 
+  opacity: 0; 
+  visibility: hidden; 
+  pointer-events: none; 
+} 
 
-.poster-card.mystery-locked {
-  background: linear-gradient(135deg, var(--bg-raised) 0%, var(--bg) 100%);
-  border: 1px solid var(--line);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-}
+.modal-case-file { 
+  background: var(--bg-raised); 
+  border: 1px solid var(--line); 
+  width: 90%; 
+  max-width: 440px; 
+  padding: 24px 28px; 
+  border-radius: 4px; 
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8); 
+  position: relative; 
+  font-family: 'Courier Prime', monospace; 
+  color: var(--paper); 
+  transform: translateY(0); 
+  transition: transform 0.2s ease; 
+} 
 
-.poster-card.mystery-locked::before {
+.modal-case-file::before { 
+  content: ""; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  height: 4px; 
+  background: var(--amber); 
+  border-top-left-radius: 3px; 
+  border-top-right-radius: 3px; 
+} 
+
+.modal-backdrop.hidden .modal-case-file { 
+  transform: translateY(15px); 
+} 
+
+.modal-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  border-bottom: 1px dashed var(--line); 
+  padding-bottom: 12px; 
+  margin-bottom: 18px; 
+} 
+
+.modal-header h2 { 
+  margin: 0; 
+  font-family: 'Special Elite', cursive; 
+  font-size: 1.3rem; 
+  letter-spacing: 2px; 
+  color: var(--amber); 
+} 
+
+.modal-close-btn { 
+  background: transparent; 
+  border: none; 
+  color: var(--paper-dim); 
+  font-size: 1.8rem; 
+  line-height: 1; 
+  cursor: pointer; 
+  transition: color 0.2s ease; 
+  padding: 0; 
+} 
+
+.modal-close-btn:hover { 
+  color: var(--stamp-red); 
+} 
+
+.modal-body p { 
+  font-size: 0.9rem; 
+  line-height: 1.6; 
+  margin-bottom: 16px; 
+  color: var(--paper-dim); 
+} 
+
+.modal-highlight { 
+  color: var(--paper); 
+  font-weight: 700; 
+  letter-spacing: 1px; 
+} 
+
+.modal-exit-btn { 
+  width: 100%; 
+  margin-top: 10px; 
+  padding: 12px; 
+  background-color: transparent; 
+  border: 1px solid var(--amber); 
+  color: var(--amber); 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.9rem; 
+  font-weight: 700; 
+  letter-spacing: 1px; 
+  cursor: pointer; 
+  border-radius: 3px; 
+  transition: all 0.2s ease; 
+} 
+
+.modal-exit-btn:hover { 
+  background-color: var(--amber); 
+  color: var(--bg); 
+} 
+
+/* ========================================================= 
+   MOBILE & TABLET OPTIMIZATION 
+   ========================================================= */ 
+@media (max-width: 600px) { 
+  .container { padding: 16px 12px; } 
+  .brand-title { font-size: 1.5rem; } 
+  .date-header { font-size: 0.7rem; } 
+  .clue-box { padding: 16px; } 
+  .clue-header-line { font-size: 0.7rem; } 
+  .script-dialogue-block { margin-left: 12px; padding-left: 12px; } 
+  .dossier-body { flex-direction: column; align-items: center; text-align: center; gap: 16px; } 
+  .dossier-poster { width: 120px; margin-right: 0; } 
+  .dossier-details { align-items: center; } 
+  .suggestions-dropdown { width: 100%; left: 0; } 
+} 
+
+/* ========================================================= 
+   MOBILE VIEWPORT & CENTERING FIXES 
+   ========================================================= */ 
+html, body { 
+  max-width: 100vw; 
+  overflow-x: hidden; 
+  margin: 0;  
+  padding: 0; 
+} 
+
+/* ========================================================= 
+   GLOBAL STATS 
+   ========================================================= */ 
+.global-stats-tracker { 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.75rem; 
+  color: var(--paper-dim); 
+  text-align: center; 
+  margin-top: 8px; 
+  letter-spacing: 1px; 
+  border-top: 1px dashed var(--line); 
+  padding-top: 8px; 
+} 
+
+.stat-highlight { 
+  color: var(--amber); 
+  font-weight: 700; 
+} 
+
+.cold-case-prompt { 
+  text-align: center; 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.8rem; 
+  color: var(--paper-dim); 
+  margin-bottom: 16px; 
+  letter-spacing: 1px; 
+} 
+
+.cold-case-prompt a { 
+  color: var(--amber); 
+  text-decoration: none; 
+  border-bottom: 1px dashed var(--amber); 
+  transition: color 0.2s ease, border-color 0.2s ease; 
+  font-weight: 700; 
+} 
+
+.cold-case-prompt a:hover { 
+  color: var(--paper); 
+  border-color: var(--paper); 
+} 
+
+/* ========================================================= 
+   CLUE 1: SCENE (LOCATION REPORT) 
+   ========================================================= */ 
+.scene-marker { 
+  font-family: 'Special Elite', cursive; 
+  font-size: 0.75rem; 
+  color: var(--amber); 
+  letter-spacing: 2px; 
+  margin-bottom: 6px; 
+  opacity: 0.7; 
+} 
+
+.highlighted-text { 
+  display: inline-block; 
+  background-color: rgba(217, 160, 91, 0.15); 
+  border-bottom: 2px solid var(--amber); 
+  padding: 2px 6px; 
+  margin: 0 0 12px -6px; 
+  border-radius: 2px; 
+} 
+
+/* ========================================================= 
+   UNIFIED INK STAMP SYSTEM (CLUE 3 & DOSSIERS) 
+   ========================================================= */ 
+.stamp,  
+.evidence-tag,  
+.dossier-header span { 
+  display: inline-block; 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.85rem; 
+  font-weight: 700; 
+  color: var(--stamp-red, #d93829); 
+  background: transparent; 
+  border: 2px solid var(--stamp-red, #d93829); 
+  padding: 4px 10px; 
+  border-radius: 3px 8px 4px 6px / 5px 3px 7px 4px;  
+  opacity: 0.85; 
+  letter-spacing: 1px; 
+  text-transform: uppercase; 
+  box-shadow: none;  
+} 
+
+.stamp { transform: rotate(-2deg); } 
+.evidence-tag { transform: rotate(1.5deg); margin-bottom: 14px; } 
+.dossier-header span:first-child { transform: rotate(-1deg); } 
+.dossier-header span:last-child { transform: rotate(1.5deg); } 
+
+.char-redact::after { 
+  content: "[REDACTED]"; 
+  position: absolute; 
+  inset: -2px -4px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  color: var(--stamp-red, #d93829); 
+  background: transparent; 
+  border: 2px solid var(--stamp-red, #d93829); 
+  border-radius: 4px 7px 3px 8px / 6px 4px 8px 3px; 
+  font-family: 'Courier Prime', monospace; 
+  font-size: 0.75rem; 
+  font-weight: 700; 
+  letter-spacing: 2px; 
+  transform: rotate(-1.5deg); 
+  opacity: 0.85; 
+} 
+
+.prop-text { 
+  border-left: 2px dashed var(--paper-dim); 
+  padding-left: 14px; 
+  font-style: italic; 
+  color: var(--paper); 
+} 
+
+/* ========================================================= 
+   THE WAX SEAL MOTIF 
+   ========================================================= */ 
+#clues-list, .clue-box { 
+  list-style: none;  
+} 
+
+.clue-tag { 
+  display: inline-flex; 
+  align-items: center; 
+  font-weight: 700; 
+  color: var(--amber); 
+} 
+
+.clue-tag::before {
   content: "";
-  position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
-  background: linear-gradient(to bottom, #b8860b, var(--amber), #b8860b);
-}
+  display: inline-block;
+  width: 22px;
+  height: 22px;
 
-.poster-graphic {
-  width: 58px; height: 84px;
-  background: repeating-linear-gradient(45deg, var(--bg), var(--bg) 4px, var(--bg-raised) 4px, var(--bg-raised) 8px);
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  display: flex; align-items: center; justify-content: center;
+  background-image:
+    linear-gradient(115deg, transparent 40%, rgba(0,0,0,0.25) 42%, transparent 44%),
+    linear-gradient(25deg, transparent 55%, rgba(0,0,0,0.2) 57%, transparent 59%),
+    radial-gradient(circle at 35% 30%, #a8272c 0%, #8a1c20 55%, #5c1013 100%);
+
+  border-radius: 42% 58% 68% 32% / 44% 47% 53% 56%;
+  margin-right: 12px;
+
+  box-shadow:
+    inset -2px -3px 4px rgba(0,0,0,0.55),
+    inset 1px 1px 2px rgba(255,255,255,0.08),
+    2px 3px 5px rgba(0,0,0,0.6);
+
+  transform: rotate(-10deg);
   flex-shrink: 0;
 }
-.poster-icon { font-size: 1.4rem; opacity: 0.5; }
 
-.poster-status-label {
-  font-family: 'Special Elite', cursive;
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  font-weight: 800;
-  color: var(--amber);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-.poster-subtext { font-size: 0.85rem; color: var(--paper-dim); line-height: 1.4; }
-
-/* Endgame Dossier */
-.dossier-card {
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 18px 20px;
-  margin: 16px 0 20px 0;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-  animation: cardFlip 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.dossier-card.victory { border-color: rgba(34, 197, 94, 0.5); }
-.dossier-card.defeat { border-color: rgba(178,58,50,0.6); }
-
-.dossier-header {
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 0.75rem; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase;
-  padding-bottom: 12px; border-bottom: 1px dashed var(--line); margin-bottom: 14px;
-  font-family: 'Courier Prime', monospace;
-}
-.dossier-header.victory-text { color: #4ade80; }
-.dossier-header.defeat-text { color: var(--stamp-red); }
-
-.dossier-body { display: flex; gap: 16px; align-items: center; }
-.dossier-poster {
-  width: 76px; height: 110px;
-  border-radius: 2px; object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  flex-shrink: 0; border: 1px solid var(--line);
-}
-.dossier-title {
-  font-size: 1.2rem; font-weight: 700; color: var(--paper); margin: 0 0 4px 0;
-  font-family: 'Special Elite', cursive; letter-spacing: 1px;
-}
-.dossier-meta { font-size: 0.8rem; color: var(--paper-dim); margin-bottom: 10px; }
-.dossier-grid { font-size: 1.1rem; letter-spacing: 3px; line-height: 1; }
-
-.dossier-footer {
-  margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line);
-  display: flex; flex-direction: column; gap: 12px; text-align: center;
-}
-.countdown-box { font-size: 0.75rem; letter-spacing: 1.5px; color: var(--paper-dim); text-transform: uppercase; font-weight: 600; }
-.countdown-timer { color: var(--amber); font-weight: 700; margin-left: 6px; }
-
-.share-action-btn {
-  width: 100%; padding: 12px 18px;
-  background-color: var(--bg); border: 1px solid var(--amber); color: var(--amber);
-  border-radius: 4px; font-weight: 700; font-size: 0.88rem; letter-spacing: 1px;
-  text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  gap: 8px; transition: all 0.2s ease; font-family: 'Courier Prime', monospace;
-}
-.share-action-btn:hover { background-color: var(--amber); color: var(--bg); }
-.share-action-btn.copied { background-color: #22c55e; border-color: #22c55e; color: var(--bg); }
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-.app-footer {
-  margin-top: 32px;
-  padding-top: 20px;
-  padding-bottom: 24px;
-  border-top: 1px dashed var(--line);
-  text-align: center;
-}
-.app-footer p { margin: 0 0 6px 0; font-size: 0.75rem; color: var(--paper-dim); letter-spacing: 0.3px; }
-.app-footer a { color: var(--amber); text-decoration: none; font-weight: 600; }
-.app-footer a:hover { text-decoration: underline; }
-
-@keyframes cardFlip {
-  0% { transform: rotateX(60deg) scale(0.95); opacity: 0; }
-  100% { transform: rotateX(0deg) scale(1); opacity: 1; }
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-.hidden { display: none !important; }
-
-/* =========================================================
-   VAULT PROMO LINK (END GAME CARD)
-   ========================================================= */
-.vault-promo-link,
-.vault-promo-link:visited {
-  display: block;
-  text-align: center;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px dashed var(--line);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--amber);
-  text-decoration: none;
-  letter-spacing: 1px;
-  transition: color 0.2s ease;
-}
-
-.vault-promo-link:hover,
-.vault-promo-link:active {
-  color: var(--paper);
-  text-decoration: none;
-}
-
-/* =========================================================
-   HELP MODAL / FIELD AGENT MANUAL
-   ========================================================= */
-.modal-backdrop {
-  position: fixed;
-  inset: 0; /* Shorthand for top, left, right, bottom 0 */
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(11, 10, 8, 0.9);
-  backdrop-filter: blur(4px);
+.visual-result-grid {
   display: flex;
+  gap: 6px;
   align-items: center;
-  justify-content: center;
-  z-index: 9999; /* Forces it above absolutely everything */
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-.modal-backdrop.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.modal-case-file {
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
-  width: 90%;
-  max-width: 440px;
-  padding: 24px 28px;
-  border-radius: 4px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
-  position: relative;
-  font-family: 'Courier Prime', monospace;
-  color: var(--paper);
-  transform: translateY(0);
-  transition: transform 0.2s ease;
-}
-
-.modal-case-file::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--amber);
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-}
-
-.modal-backdrop.hidden .modal-case-file {
-  transform: translateY(15px);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px dashed var(--line);
-  padding-bottom: 12px;
-  margin-bottom: 18px;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-family: 'Special Elite', cursive;
-  font-size: 1.3rem;
-  letter-spacing: 2px;
-  color: var(--amber);
-}
-
-.modal-close-btn {
-  background: transparent;
-  border: none;
-  color: var(--paper-dim);
-  font-size: 1.8rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  padding: 0;
-}
-
-.modal-close-btn:hover {
-  color: var(--stamp-red);
-}
-
-.modal-body p {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  color: var(--paper-dim);
-}
-
-.modal-highlight {
-  color: var(--paper);
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-/* New Exit Button */
-.modal-exit-btn {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  background-color: transparent;
-  border: 1px solid var(--amber);
-  color: var(--amber);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  border-radius: 3px;
+.seal-pip {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 42% 58% 68% 32% / 44% 47% 53% 56%; /* Organic lumpy shape */
+  background-color: var(--line); /* Unplayed clues sit as dark holes/indentations */
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.6); 
   transition: all 0.2s ease;
 }
 
-.modal-exit-btn:hover {
-  background-color: var(--amber);
-  color: var(--bg);
+.seal-pip.wrong {
+  background: radial-gradient(circle at 30% 30%, #d93829 0%, #b23a32 60%, #8a1c20 100%);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.4), 1px 2px 3px rgba(0,0,0,0.4);
 }
 
-/* =========================================================
-   MOBILE & TABLET OPTIMIZATION
-   ========================================================= */
-@media (max-width: 600px) {
-  /* Tighten up the main container padding */
-  .container {
-    padding: 16px 12px;
-  }
-
-  /* Scale down the navigation text slightly */
-  .brand-title {
-    font-size: 1.5rem;
-  }
-  .date-header {
-    font-size: 0.7rem;
-  }
-
-  /* Maximize space inside the clue boxes */
-  .clue-box {
-    padding: 16px;
-  }
-  .clue-header-line {
-    font-size: 0.7rem;
-  }
-  .script-dialogue-block {
-    margin-left: 12px;
-    padding-left: 12px;
-  }
-
-  /* Stack the Game Over dossier card vertically */
-  .dossier-body {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 16px;
-  }
-  .dossier-poster {
-    width: 120px;
-    margin-right: 0;
-  }
-  .dossier-details {
-    align-items: center;
-  }
-
-  /* Ensure the search dropdown doesn't overflow the screen */
-  .suggestions-dropdown {
-    width: 100%;
-    left: 0;
-  }
-}
-/* =========================================================
-   CLUE 1: SCENE (LOCATION REPORT)
-   ========================================================= */
-.scene-marker {
-  font-family: 'Special Elite', cursive;
-  font-size: 0.75rem;
-  color: var(--amber);
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  opacity: 0.7;
+.seal-pip.correct {
+  background: radial-gradient(circle at 30% 30%, #4ade80 0%, #22c55e 60%, #166534 100%);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.4), 1px 2px 3px rgba(0,0,0,0.4);
 }
 
-.highlighted-text {
+/* ========================================================= 
+   VICTORY STAMP OVERRIDE 
+   ========================================================= */ 
+.dossier-header.victory-text span {
+  color: #4ade80; /* The victory green */
+  border-color: #4ade80;
+}
+
+.stamp {
   display: inline-block;
-  background-color: rgba(217, 160, 91, 0.15); /* Faint amber highlight ink */
-  border-bottom: 2px solid var(--amber); /* Thick marker underline */
-  padding: 2px 6px;
-  margin: 0 0 12px -6px; /* Offset slightly to the left to envelop text */
-  border-radius: 2px;
-}
-
-/* =========================================================
-   CLUE 3: PROP (EXHIBIT TAG)
-   ========================================================= */
-.evidence-tag {
-  display: inline-block;
-  background-color: var(--stamp-red);
-  color: var(--bg);
+  position: relative;
   font-family: 'Courier Prime', monospace;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  color: var(--stamp-red);
+  border: 2px solid var(--stamp-red);
   padding: 4px 10px;
-  border: 1px dashed rgba(255, 255, 255, 0.5); /* Tag stitching */
-  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.4);
-  transform: rotate(-1.5deg); /* Slight physical tilt */
-  margin-bottom: 14px;
-}
-
-.prop-text {
-  border-left: 2px dashed var(--paper-dim);
-  padding-left: 14px;
-  font-style: italic; /* Makes it read like an added investigative note */
-  color: var(--paper);
+  border-radius: 4px 8px 3px 6px / 6px 4px 7px 3px;
+  transform: rotate(-1.5deg);
+  margin-bottom: 12px; /* Adds clear separation between the stamp and the character name below it */
+  margin-top: 4px;
 }

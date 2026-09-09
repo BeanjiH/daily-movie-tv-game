@@ -1,38 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CINEMIND — The Vault</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="vault.css" />
-</head>
-<body>
-  <div class="vault-screen">
-    <div class="vault-top-bar">
-      <a href="index.html" class="case-room-btn">← Case Room</a>
-      <span id="archive-stat" class="archive-stat">ARCHIVE 0/50 LOGGED</span>
-    </div>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <title>CINEMIND — The Vault</title> 
+  <link rel="stylesheet" href="style.css" /> 
+  <link rel="stylesheet" href="vault.css" /> 
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+</head> 
+<body> 
+  <div class="vault-screen"> 
+    <div class="vault-top-bar"> 
+      <a href="index.html" class="case-room-btn">← Case Room</a> 
+    </div> 
 
-    <header style="text-align: center;">
-      <h1>THE VAULT</h1>
-      <div class="date-header">35MM CONTACT LOG · ARCHIVED CASES</div>
+    <header style="text-align: center;"> 
+      <h1>THE VAULT</h1> 
+      <div class="date-header">35MM CONTACT LOG · ARCHIVED CASES</div> 
 
-      <p class="vault-brief">The archives hold the last 50 days of sealed film negatives and redacted broadcast tapes. Dust off the cold cases and see if you can still crack the script.</p>
+      <p class="vault-brief">The archives hold the last 50 days of sealed film negatives and redacted broadcast tapes. Dust off the cold cases and see if you can still crack the script.</p> 
 
-      <div class="vault-toggle-wrap">
-        <button id="tab-film-btn" class="tab-btn active">🎬 Film Strip</button>
-        <button id="tab-tv-btn" class="tab-btn">📺 TV Reel</button>
+      <!-- Centered Stats Tracker -->
+      <div class="vault-stats-centered">
+        CLEARED: &nbsp;🎬 <span id="stat-film" class="stat-highlight">0</span>/50 <span class="stat-divider">|</span> 📺 <span id="stat-tv" class="stat-highlight">0</span>/50
       </div>
-    </header>
 
-    <div id="contact-sheet" class="contact-sheet">
-      <!-- Generated dynamically by vault.js -->
-    </div>
-  </div>
+      <div class="vault-toggle-wrap"> 
+        <button id="tab-film-btn" class="tab-btn active">🎬 Film Strip</button> 
+        <button id="tab-tv-btn" class="tab-btn">📺 TV Reel</button> 
+      </div> 
+    </header> 
 
-  <script src="films.js"></script>
-  <script src="tv.js"></script>
-  <script src="vault.js"></script>
-</body>
+    <div id="contact-sheet" class="contact-sheet"> 
+      <!-- Generated dynamically by vault.js --> 
+    </div> 
+  </div> 
+
+  <script src="films.js"></script> 
+  <script src="tv.js"></script> 
+  <script src="vault.js"></script> 
+</body> 
 </html>

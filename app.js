@@ -12,7 +12,7 @@ const allTitles = {
 };
 
 // Calculate Day Index
-const ANCHOR_DATE = new Date("2026-01-01T00:00:00");
+const ANCHOR_DATE = new Date("2026-07-21T00:00:00");
 const today = new Date();
 const systemDayIndex = Math.floor((today - ANCHOR_DATE) / (1000 * 60 * 60 * 24));
 
@@ -379,16 +379,26 @@ function updateUI(triggerRevealAnimation = false) {
   }
 
   // End Game / Classified Poster Card
-  if (DOM.posterCard) {
+if (DOM.posterCard) {
     if (state.gameOver) {
-      const grid = Array.from({ length: 5 }).map((_, i) => (state.isSuccess && i === state.clueIndex) ? "🟩 " : (i <= state.clueIndex ? "🟥 " : "⬛ ")).join("").trim();
+      // 1. Text grid for the clipboard (Emojis hidden from UI)
+      const textGrid = Array.from({ length: 5 }).map((_, i) => (state.isSuccess && i === state.clueIndex) ? "🟩" : (i <= state.clueIndex ? "🟥" : "⬛")).join("");
+      
+      // 2. Visual HTML grid for the button (Using CSS wax seals)
+      const htmlGrid = Array.from({ length: 5 }).map((_, i) => {
+        let pipClass = "empty";
+        if (state.isSuccess && i === state.clueIndex) pipClass = "correct";
+        else if (i <= state.clueIndex) pipClass = "wrong";
+        return `<span class="seal-pip ${pipClass}"></span>`;
+      }).join("");
+
       DOM.posterCard.className = `dossier-card ${state.isSuccess ? 'victory' : 'defeat'}`;
       
-      // Determine Vault prompt based on current mode
       const vaultPrompt = !isArchiveMode 
-        ? `<a href="vault.html" class="vault-promo-link">ACCESS THE VAULT TO CRACK PAST CASES ➔</a>`
-        : `<a href="vault.html" class="vault-promo-link">➔ RETURN TO THE VAULT</a>`;
+        ? `<a href="vault.html" class="vault-promo-link">ACCESS THE VAULT TO CRACK PAST CASES &raquo;</a>`
+        : `<a href="vault.html" class="vault-promo-link">&raquo; RETURN TO THE VAULT</a>`;
 
+      // Notice the duplicated <div class="dossier-grid"> is completely gone
       DOM.posterCard.innerHTML = `
         <div class="dossier-header ${state.isSuccess ? 'victory-text' : 'defeat-text'}">
           <span>${state.isSuccess ? '✓ CASE SOLVED' : '✕ CASE UNRESOLVED'}</span>
@@ -399,12 +409,14 @@ function updateUI(triggerRevealAnimation = false) {
           <div class="dossier-details">
             <div class="dossier-title">${puzzle.title}</div>
             <div class="dossier-meta">${game.activeTab.toUpperCase()} PRODUCTION ARCHIVE</div>
-            <div class="dossier-grid">${grid}</div>
           </div>
         </div>
         <div class="dossier-footer">
           <div class="countdown-box">${isArchiveMode ? `VAULT ARCHIVE · CASE #${activeDayIndex}` : `NEXT CASE IN <span id="countdown-display" class="countdown-timer"></span>`}</div>
-          <button id="share-btn" class="share-action-btn" onclick="copyShareScore()"><span>SHARE RESULT</span><span>${grid}</span></button>
+          <button id="share-btn" class="share-action-btn" onclick="copyShareScore()">
+            <span>SHARE RESULT</span>
+            <div class="visual-result-grid">${htmlGrid}</div>
+          </button>
           ${vaultPrompt}
         </div>
       `;
@@ -427,12 +439,19 @@ setInterval(() => {
 
 window.copyShareScore = function() {
   const state = game.getCurrentTabState();
-  const grid = Array.from({ length: 5 }).map((_, i) => (state.isSuccess && i === state.clueIndex) ? "🟩 " : (i <= state.clueIndex ? "🟥 " : "⬛ ")).join("").trim();
-  navigator.clipboard.writeText(`CINEMIND (${game.activeTab.toUpperCase()}) #${activeDayIndex}\n${state.isSuccess ? state.clueIndex + 1 : 'X'}/5 Clues\n${grid}\nhttps://cinemind.game`).then(() => {
+  const textGrid = Array.from({ length: 5 }).map((_, i) => (state.isSuccess && i === state.clueIndex) ? "🟩" : (i <= state.clueIndex ? "🟥" : "⬛")).join("");
+  
+  navigator.clipboard.writeText(`CINEMIND (${game.activeTab.toUpperCase()}) #${activeDayIndex}\n${state.isSuccess ? state.clueIndex + 1 : 'X'}/5 Clues\n${textGrid}\nhttps://cinemind.game`).then(() => {
     const btn = document.getElementById("share-btn");
+    const originalHTML = btn.innerHTML; // Saves the visual seals layout
+    
     btn.innerText = "COPIED TO CLIPBOARD! ✓";
     btn.classList.add("copied");
-    setTimeout(() => { btn.innerHTML = `<span>SHARE RESULT</span> <span>${grid}</span>`; btn.classList.remove("copied"); }, 2500);
+    
+    setTimeout(() => { 
+      btn.innerHTML = originalHTML; // Restores the visual seals
+      btn.classList.remove("copied"); 
+    }, 2500);
   });
 };
 
