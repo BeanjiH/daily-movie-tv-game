@@ -982,3 +982,146 @@ html, body {
   font-size: 0.95rem;
   color: var(--amber); /* or your text color */
 }
+
+/* Stacks search bar and skip button on mobile. */
+@media (max-width: 600px) {
+  .guess-container {
+    flex-direction: column;
+  }
+  
+  #skip-btn {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+.status-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 18px 12px;
+  border: 1.5px solid #884444; 
+  background: rgba(150, 40, 40, 0.04);
+  border-radius: 4px;
+  width: 100% !important; 
+  align-self: stretch !important;
+  margin: 16px auto 16px !important;
+  box-sizing: border-box; 
+  text-align: center;
+  overflow: visible; 
+  transition: all 0.5s ease-in;
+  max-height: 150px; 
+  opacity: 1;
+}
+
+/* JavaScript will add this class after 3.5 seconds */
+.status-panel.hiding {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-width: 0;
+}
+
+/* The Stamp Animation */
+@keyframes stamp-down {
+  0% { 
+    opacity: 0; 
+    transform: scale(1.3); /* Starts slightly too large */
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1); /* Slams into actual size */
+  }
+}
+
+/* The Fade & Collapse Animation */
+@keyframes fade-away {
+  0% { 
+    opacity: 1; 
+    max-height: 150px; /* Safe upper bound for the box height */
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-width: 1.5px;
+  }
+  100% { 
+    opacity: 0; 
+    max-height: 0; /* Smoothly shrinks the gap to zero */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-width: 0;
+  }
+}
+
+.status-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-stamp {
+  position: absolute;
+  top: -12px; /* Breaks the top border slightly */
+  left: 16px;
+  z-index: 10;
+  
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 0.75rem; 
+  padding: 2px 8px; 
+  border: 1.5px solid; 
+  border-radius: 3px;
+  letter-spacing: 1px;
+  background: #1a1a1a; /* Matches your body background so the border line doesn't show through the stamp */
+  
+  animation: stamp-down 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+.error-stamp {
+  color: #cc5555;
+  border-color: #cc5555;
+  transform: rotate(-4deg); 
+}
+
+.skip-stamp {
+  color: #999;
+  border-color: #999;
+  transform: rotate(3deg);
+}
+
+.status-guess {
+  font-family: inherit; 
+  color: #b3a06d; 
+  font-size: 1.05rem; 
+  font-weight: normal; 
+  line-height: 1.4;
+  text-align: center;
+}
+
+.status-consequence {
+  color: #888;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-primary {
+  /* Drop flexbox and use standard block centering */
+  display: block; 
+  text-align: center;
+  line-height: 1.5; /* Gives breathing room if the text wraps to two lines */
+}
+
+.status-separator {
+  color: #884444;
+  font-size: 0.9rem;
+  display: inline;
+  margin: 0 4px;
+}

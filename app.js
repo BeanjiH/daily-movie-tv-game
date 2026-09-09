@@ -203,14 +203,16 @@ DOM.guessInput.addEventListener("keydown", (e) => {
     
     const matches = game.searchTitles(query);
     const tabState = game.getCurrentTabState();
-    // Since matches are now objects, check item.title
     const firstAvailable = matches.find(item => !tabState.guesses.some(g => g.toLowerCase() === item.title.toLowerCase()));
     
     if (firstAvailable) {
-      executeSelection(firstAvailable.title); // Pass the title string
+      executeSelection(firstAvailable.title);
     } else {
-      DOM.statusMsg.innerText = `Please select an available title from the list.`;
-      DOM.statusMsg.className = "error";
+      if (window.statusTimeout) clearTimeout(window.statusTimeout);
+      DOM.statusMsg.innerHTML = `<div class="status-consequence">Please select an available title from the list.</div>`;
+      DOM.statusMsg.className = "status-panel";
+      DOM.statusMsg.classList.remove("hiding");
+      window.statusTimeout = setTimeout(() => DOM.statusMsg.classList.add("hiding"), 3500);
     }
   }
 });
@@ -253,7 +255,6 @@ function renderSuggestions(matches) {
     const item = document.createElement("div");
     item.className = `suggestion-item ${isGuessed ? "disabled" : ""}`;
     
-    // Poster on the left, title text directly to the right
     item.innerHTML = `
       <img src="${matchItem.poster}" alt="${titleText}" class="suggestion-poster" />
       <span class="suggestion-title">${titleText}</span>
@@ -374,27 +375,53 @@ function updateUI(triggerRevealAnimation = false) {
     }
   }
 
+  // Clear running timeout before showing new status
+  if (window.statusTimeout) clearTimeout(window.statusTimeout);
+
   if (state.gameOver) {
     DOM.statusMsg.className = "hidden";
-    DOM.statusMsg.innerText = "";
-  } else {
-    if (!state.message && state.guesses.length > 0) {
-      const lastGuess = state.guesses[state.guesses.length - 1];
-      state.message = lastGuess === "SKIPPED" 
-        ? `Clue skipped. Clue ${state.clueIndex + 1} revealed.` 
-        : `"${lastGuess}" was incorrect. Clue ${state.clueIndex + 1} unlocked.`;
+    DOM.statusMsg.innerHTML = "";
+  } else if (state.guesses.length > 0) {
+    const lastGuess = state.guesses[state.guesses.length - 1];
+    
+    if (lastGuess === "SKIPPED") {
+      DOM.statusMsg.innerHTML = `
+        <span class="status-stamp skip-stamp">➔ SKIPPED</span>
+        <div class="status-content">
+          <div class="status-consequence">Clue ${state.clueIndex + 1} revealed.</div>
+        </div>
+      `;
+    } else {
+      DOM.statusMsg.innerHTML = `
+        <span class="status-stamp error-stamp">✕ INCORRECT</span>
+        <div class="status-content">
+          <div class="status-guess">"${lastGuess}"</div>
+          <div class="status-consequence">Clue ${state.clueIndex + 1} revealed.</div>
+        </div>
+      `;
     }
-    DOM.statusMsg.innerText = state.message;
-    DOM.statusMsg.className = state.message ? "error" : "";
+    
+    // Strip classes and force DOM reflow to replay the stamp animation
+    DOM.statusMsg.className = "";
+    void DOM.statusMsg.offsetWidth; 
+    
+    // Apply visible state
+    DOM.statusMsg.className = "status-panel";
+    
+    // Start fade/collapse timer
+    window.statusTimeout = setTimeout(() => {
+      DOM.statusMsg.classList.add("hiding");
+    }, 3500);
+  } else {
+    DOM.statusMsg.className = "hidden";
+    DOM.statusMsg.innerHTML = "";
   }
 
   // End Game / Classified Poster Card
-if (DOM.posterCard) {
+  if (DOM.posterCard) {
     if (state.gameOver) {
-      // 1. Text grid for the clipboard (Emojis hidden from UI)
       const textGrid = Array.from({ length: 5 }).map((_, i) => (state.isSuccess && i === state.clueIndex) ? "🟩" : (i <= state.clueIndex ? "🟥" : "⬛")).join("");
       
-      // 2. Visual HTML grid for the button (Using CSS wax seals)
       const htmlGrid = Array.from({ length: 5 }).map((_, i) => {
         let pipClass = "empty";
         if (state.isSuccess && i === state.clueIndex) pipClass = "correct";
@@ -408,7 +435,6 @@ if (DOM.posterCard) {
         ? `<a href="vault.html" class="vault-promo-link">ACCESS THE VAULT TO CRACK PAST CASES &raquo;</a>`
         : `<a href="vault.html" class="vault-promo-link">&raquo; RETURN TO THE VAULT</a>`;
 
-      // Notice the duplicated <div class="dossier-grid"> is completely gone
       const metadataClue = puzzle.clues.find(c => c.format === "metadata") || {};
 
       DOM.posterCard.innerHTML = `
@@ -456,13 +482,13 @@ window.copyShareScore = function() {
   
   navigator.clipboard.writeText(`CINEMIND (${game.activeTab.toUpperCase()}) #${activeDayIndex}\n${state.isSuccess ? state.clueIndex + 1 : 'X'}/5 Clues\n${textGrid}\nhttps://cinemind.game`).then(() => {
     const btn = document.getElementById("share-btn");
-    const originalHTML = btn.innerHTML; // Saves the visual seals layout
+    const originalHTML = btn.innerHTML; 
     
     btn.innerText = "COPIED TO CLIPBOARD! ✓";
     btn.classList.add("copied");
     
     setTimeout(() => { 
-      btn.innerHTML = originalHTML; // Restores the visual seals
+      btn.innerHTML = originalHTML; 
       btn.classList.remove("copied"); 
     }, 2500);
   });
