@@ -8,50 +8,27 @@ if (!TMDB_API_KEY) {
 }
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
-const TARGET_COUNT = 200; // Will harvest 200 TV shows
+const TARGET_COUNT = 2000; // Target 2000 films
 
-// TMDB returns 20 shows per page; 10 pages = 200 shows
-const PAGES_TO_FETCH = Math.ceil(TARGET_COUNT / 20);
+// TMDB returns 20 movies per page; calculating pages needed (plus a small buffer for skipped items)
+const PAGES_TO_FETCH = Math.ceil(TARGET_COUNT / 20) + 15;
 
-async function fetchDetails(tvId) {
+async function fetchMovieDetails(movieId) {
   try {
-    const detailsUrl = `https://api.themoviedb.org/3/tv/${tvId}?api_key=${TMDB_API_KEY}&append_to_response=credits`;
+    const detailsUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`;
     const res = await fetch(detailsUrl);
     if (!res.ok) return null;
     const details = await res.json();
 
-    // TV shows use created_by or Executive Producer crew credits
-    const creator =
-      details.created_by?.length > 0
-        ? details.created_by.map(c => c.name).join(", ")
-        : details.credits?.crew?.find(c => c.job === "Executive Producer")?.name || "Unknown Creator";
+    const releaseYear = details.release_date ? details.release_date.split("-")[0] : "N/A";
 
-    const startYear = details.first_air_date ? details.first_air_date.split("-")[0] : "N/A";
-    const endYear = details.status === "Ended" && details.last_air_date
-      ? details.last_air_date.split("-")[0]
-      : "PRESENT";
-    const years = startYear === endYear ? startYear : `${startYear}–${endYear}`;
-
-    const seasons = details.number_of_seasons || 1;
-    const network = details.networks?.[0]?.name || "Television";
-
-    const genres = details.genres?.length
-      ? details.genres.map(g => g.name).join(" / ")
-      : "Drama";
-
-    // Only accept entries that have both a poster and a backdrop
-    if (!details.poster_path || !details.backdrop_path) return null;
+    // Only accept entries that have both a poster, a title, and a valid release year
+    if (!details.poster_path || !details.title || releaseYear === "N/A") return null;
 
     return {
-      title: details.name,
-      year: years,
-      genre: genres,
-      creator,
-      network,
-      seasons,
-      details: `${network} · ${seasons} Season${seasons > 1 ? "s" : ""} · Created by ${creator}`,
-      poster: `${IMAGE_BASE}${details.poster_path}`,
-      backdrop: `${IMAGE_BASE}${details.backdrop_path}`
+      title: details.title,
+      year: releaseYear,
+      poster: `${IMAGE_BASE}${details.poster_path}`
     };
   } catch (err) {
     return null;
@@ -59,15 +36,15 @@ async function fetchDetails(tvId) {
 }
 
 async function run() {
-  console.log(`=== HARVESTING ~${TARGET_COUNT} RECOGNIZED TV SHOWS FROM TMDB ===\n`);
+  console.log(`=== HARVESTING ~${TARGET_COUNT} MOVIES FOR TITLES-FILM.JS ===\n`);
   const catalog = [];
   const seenTitles = new Set();
 
   for (let page = 1; page <= PAGES_TO_FETCH; page++) {
-    console.log(`--> Fetching TMDB Popular/Acclaimed TV Page ${page}/${PAGES_TO_FETCH}...`);
+    console.log(`--> Fetching TMDB Popular/Acclaimed Movies Page ${page}/${PAGES_TO_FETCH}...`);
 
-    // Sort by vote_count to capture universal culturally recognized shows
-    const discoverUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&sort_by=vote_count.desc&vote_count.gte=1000&include_null_first_air_dates=false&page=${page}`;
+    // Sort movies by vote_count to capture culturally recognized films
+    const discoverUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&sort_by=vote_count.desc&vote_count.gte=100&include_adult=false&page=${page}`;
 
     try {
       const pageRes = await fetch(discoverUrl);
@@ -75,15 +52,15 @@ async function run() {
 
       if (!pageData.results || pageData.results.length === 0) break;
 
-      for (const show of pageData.results) {
+      for (const movie of pageData.results) {
         if (catalog.length >= TARGET_COUNT) break;
-        if (seenTitles.has(show.name)) continue;
+        if (seenTitles.has(movie.title)) continue;
 
-        const showData = await fetchDetails(show.id);
-        if (showData) {
-          seenTitles.add(showData.title);
-          catalog.push(showData);
-          console.log(`  [${catalog.length}/${TARGET_COUNT}] ✓ ${showData.title} (${showData.year})`);
+        const movieData = await fetchMovieDetails(movie.id);
+        if (movieData) {
+          seenTitles.add(movieData.title);
+          catalog.push(movieData);
+          console.log(`  [${catalog.length}/${TARGET_COUNT}] ✓ ${movieData.title} (${movieData.year})`);
         }
 
         // Small 50ms pause to respect API rate limits
@@ -96,8 +73,11 @@ async function run() {
     if (catalog.length >= TARGET_COUNT) break;
   }
 
-  fs.writeFileSync("tmdb-tv-catalog.json", JSON.stringify(catalog, null, 2));
-  console.log(`\nSUCCESS: Harvested ${catalog.length} complete TV profiles into tmdb-tv-catalog.json`);
+  // Format as a JS file export for your film catalog
+  const fileContent = `const movieTitles = ${JSON.stringify(catalog, null, 2)};\n`;
+  fs.writeFileSync("new-titles-film.js", fileContent);
+  
+  console.log(`\nSUCCESS: Generated titles-film.js with ${catalog.length} entries!`);
 }
 
 run();

@@ -960,3 +960,25 @@ html, body {
   margin-bottom: 12px; /* Adds clear separation between the stamp and the character name below it */
   margin-top: 4px;
 }
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.suggestion-poster {
+  width: 32px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0; /* Prevents the poster from squishing */
+}
+
+.suggestion-title {
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--amber); /* or your text color */
+}

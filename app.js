@@ -22,7 +22,7 @@ const activeDayIndex = isArchiveMode ? parseInt(urlParams.get("day"), 10) : syst
 const queryCat = urlParams.get("cat");
 
 // Fuzzy Search Engine
-const fuseOptions = { threshold: 0.3, includeScore: true, ignoreLocation: true };
+const fuseOptions = { threshold: 0.3, includeScore: true, ignoreLocation: true, keys: ['title'] }
 const searchIndex = {
   film: new Fuse(allTitles.film, fuseOptions),
   tv: new Fuse(allTitles.tv, fuseOptions)
@@ -203,10 +203,11 @@ DOM.guessInput.addEventListener("keydown", (e) => {
     
     const matches = game.searchTitles(query);
     const tabState = game.getCurrentTabState();
-    const firstAvailable = matches.find(title => !tabState.guesses.some(g => g.toLowerCase() === title.toLowerCase()));
+    // Since matches are now objects, check item.title
+    const firstAvailable = matches.find(item => !tabState.guesses.some(g => g.toLowerCase() === item.title.toLowerCase()));
     
     if (firstAvailable) {
-      executeSelection(firstAvailable);
+      executeSelection(firstAvailable.title); // Pass the title string
     } else {
       DOM.statusMsg.innerText = `Please select an available title from the list.`;
       DOM.statusMsg.className = "error";
@@ -245,13 +246,22 @@ function renderSuggestions(matches) {
 
   if (matches.length === 0) return hideSuggestions();
 
-  matches.forEach(title => {
-    const isGuessed = tabState.guesses.some(g => g.toLowerCase() === title.toLowerCase());
+  matches.forEach(matchItem => {
+    const titleText = matchItem.title;
+    const isGuessed = tabState.guesses.some(g => g.toLowerCase() === titleText.toLowerCase());
+    
     const item = document.createElement("div");
     item.className = `suggestion-item ${isGuessed ? "disabled" : ""}`;
-    item.innerText = title;
     
-    if (!isGuessed) item.addEventListener("click", () => executeSelection(title));
+    // Poster on the left, title text directly to the right
+    item.innerHTML = `
+      <img src="${matchItem.poster}" alt="${titleText}" class="suggestion-poster" />
+      <span class="suggestion-title">${titleText}</span>
+    `;
+    
+    if (!isGuessed) {
+      item.addEventListener("click", () => executeSelection(titleText));
+    }
     DOM.suggestions.appendChild(item);
   });
   DOM.suggestions.classList.remove("hidden");

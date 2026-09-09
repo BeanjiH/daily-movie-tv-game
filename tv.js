@@ -297,13 +297,13 @@ const tvCatalog = [
     ]
   },
   {
-    title: "Naruto Shippūden",
+    title: "Naruto: Shippuden",
     poster: "https://image.tmdb.org/t/p/w500/kV27j3Nz4d5z8u6mN3EJw9RiLg2.jpg",
     clues: [
       { format: "scene", slugline: "EXT. CRATERED LEAF VILLAGE RUINS - DAY", action: "A nine-tailed chakra cloak erupts out of a massive impact crater while six figures with pierced faces and concentric purple eyes float in formation above." },
       { format: "dialogue", character: "Pain", line: "Those who do not understand true pain can never understand true peace." },
       { format: "prop", item: "An orange spiral mask with a single eyehole worn by a rogue puppet-master ninja." },
-      { format: "metadata", year: "2007–2017", genre: "Animation / Action & Adventure / Sci-Fi & Fantasy", details: "TV Tokyo · 20 Seasons · Created by Unknown Creator" },
+      { format: "metadata", year: "2007–2017", genre: "Animation / Action & Adventure / Sci-Fi & Fantasy", details: "TV Tokyo · 20 Seasons · Created by Masashi Kishimoto" },
       { format: "signature", character: "NARUTO UZUMAKI", line: "I never go back on my word. That's my ninja way!" }
     ]
   },
@@ -622,7 +622,7 @@ const tvCatalog = [
       { format: "scene", slugline: "INT. BEDROOM STUDY DESK - NIGHT", action: "A top-ranking high school student furiously scribbles names into an open black diary with a fountain pen while eating potato chips under desk lamp light." },
       { format: "dialogue", character: "L", line: "I am justice! I protect the innocent and those who fear evil. I'm the one that will become the god of a new world that everyone desires!" },
       { format: "prop", item: "A black leather-bound notebook with the instructions 'How to Use' printed inside the front cover in white lettering." },
-      { format: "metadata", year: "2006–2007", genre: "Animation / Mystery / Sci-Fi & Fantasy", details: "Nippon TV · 1 Season · Created by Unknown Creator" },
+      { format: "metadata", year: "2006–2007", genre: "Animation / Mystery / Sci-Fi & Fantasy", details: "Nippon TV · 1 Season · Created by Akira Toriyama" },
       { format: "signature", character: "LIGHT YAGAMI", line: "I'll take a potato chip... and eat it!" }
     ]
   },
@@ -655,7 +655,7 @@ const tvCatalog = [
       { format: "scene", slugline: "EXT. CRUMBLING DESERT PLATEAU - DAY", action: "Pebbles and boulders rise weightlessly off the ground as a warrior's black hair spikes up into golden flame amidst flashing lightning bolts." },
       { format: "dialogue", character: "Piccolo", line: "Even with the energy of the entire planet, it's not enough to stop this monster!" },
       { format: "prop", item: "A radar device with a green grid display tracking seven glowing amber crystalline spheres containing five-pointed stars." },
-      { format: "metadata", year: "1989–1996", genre: "Animation / Sci-Fi & Fantasy / Action & Adventure", details: "Fuji TV · 9 Seasons · Created by Unknown Creator" },
+      { format: "metadata", year: "1989–1996", genre: "Animation / Sci-Fi & Fantasy / Action & Adventure", details: "Fuji TV · 9 Seasons · Created by Akira Toriyama" },
       { format: "signature", character: "VEGETA", line: "It's over nine thousand!" }
     ]
   },
@@ -743,7 +743,7 @@ const tvCatalog = [
       { format: "scene", slugline: "INT. HIGH SCHOOL CLASSROOM - NIGHT", action: "Monstrous cursed spirits smash through second-story windows as an athletic teenager swallows a mummified, rotting human finger whole." },
       { format: "dialogue", character: "Megumi Fushiguro", line: "I don't care if you're right or wrong. I just want to save people, even if it's selfish." },
       { format: "prop", item: "A blindfold made of heavy black fabric worn to suppress infinite visual ocular sensory input." },
-      { format: "metadata", year: "2020–PRESENT", genre: "Animation / Sci-Fi & Fantasy / Action & Adventure", details: "MBS · 1 Season · Created by Unknown Creator" },
+      { format: "metadata", year: "2020–PRESENT", genre: "Animation / Sci-Fi & Fantasy / Action & Adventure", details: "MBS · 1 Season · Created by Gege Akutami" },
       { format: "signature", character: "SATORU GOJO", line: "Throughout heaven and earth, I alone am the honored one." }
     ]
   },
@@ -842,7 +842,7 @@ const tvCatalog = [
       { format: "scene", slugline: "EXT. CITY Z CRATER - DAY", action: "A bald man in a yellow jumpsuit and red rubber gloves sighs with profound boredom as a colossal city-destroying alien explodes into red mist." },
       { format: "dialogue", character: "Genos", line: "Master, please simplify your training regiment down to twenty words or less." },
       { format: "prop", item: "A supermarket coupon flyer clutched in terror during a Saturday discount bargain rush." },
-      { format: "metadata", year: "2015–PRESENT", genre: "Animation / Comedy / Action & Adventure / Sci-Fi & Fantasy", details: "TV Tokyo · 3 Seasons · Created by Unknown Creator" },
+      { format: "metadata", year: "2015–PRESENT", genre: "Animation / Comedy / Action & Adventure / Sci-Fi & Fantasy", details: "TV Tokyo · 3 Seasons · Created by ONE" },
       { format: "signature", character: "SAITAMA", line: "I'm just a guy who's a hero for fun." }
     ]
   },
