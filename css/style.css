@@ -506,11 +506,13 @@ input:focus { outline: 1px solid var(--amber); border-color: var(--amber); }
 
 .dossier-body { display: flex; gap: 16px; align-items: center; } 
 .dossier-poster { 
-  width: 76px; height: 110px; 
-  border-radius: 2px; object-fit: cover; 
+  width: 76px; 
+  height: auto; /* Allows the image to scale naturally without cropping */
+  border-radius: 2px; 
   box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
-  flex-shrink: 0; border: 1px solid var(--line); 
-} 
+  flex-shrink: 0; 
+  border: 1px solid var(--line); 
+}
 .dossier-title { 
   font-size: 1.2rem; font-weight: 700; color: var(--paper); margin: 0 0 4px 0; 
   font-family: 'Special Elite', cursive; letter-spacing: 1px; 
