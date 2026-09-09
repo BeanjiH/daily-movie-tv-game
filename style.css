@@ -844,7 +844,7 @@ html, body {
 } 
 
 .stamp { transform: rotate(-2deg); } 
-.evidence-tag { transform: rotate(1.5deg); margin-bottom: 14px; } 
+.evidence-tag { transform: rotate(1.5deg); margin-bottom: 14px; margin-top: 8px; position: relative; z-index: 5;} 
 .dossier-header span:first-child { transform: rotate(-1deg); } 
 .dossier-header span:last-child { transform: rotate(1.5deg); } 
 

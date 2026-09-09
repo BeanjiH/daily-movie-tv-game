@@ -506,7 +506,7 @@ const filmCatalog = [
       { format: "dialogue", character: "Fenrir Greyback", line: "Harry Potter is dead! From this day forth, you put your faith in me." },
       { format: "prop", item: "An elder wood wand adorned with carved spherical clusters along its shaft" },
       { format: "metadata", year: "2011", genre: "Adventure / Fantasy", details: "Directed by David Yates" },
-      { format: "signature", character: "Severus Snape", line: "Always." }
+      { format: "signature", character: "Severus Snape", line: "You have your mother's eyes.." }
     ]
   },
   {
