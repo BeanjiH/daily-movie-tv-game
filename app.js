@@ -399,6 +399,8 @@ if (DOM.posterCard) {
         : `<a href="vault.html" class="vault-promo-link">&raquo; RETURN TO THE VAULT</a>`;
 
       // Notice the duplicated <div class="dossier-grid"> is completely gone
+      const metadataClue = puzzle.clues.find(c => c.format === "metadata") || {};
+
       DOM.posterCard.innerHTML = `
         <div class="dossier-header ${state.isSuccess ? 'victory-text' : 'defeat-text'}">
           <span>${state.isSuccess ? '✓ CASE SOLVED' : '✕ CASE UNRESOLVED'}</span>
@@ -408,11 +410,12 @@ if (DOM.posterCard) {
           <img class="dossier-poster" src="${puzzle.poster}" alt="${puzzle.title}" />
           <div class="dossier-details">
             <div class="dossier-title">${puzzle.title}</div>
-            <div class="dossier-meta">${game.activeTab.toUpperCase()} PRODUCTION ARCHIVE</div>
+            <div class="dossier-meta">${game.activeTab.toUpperCase()} PRODUCTION ARCHIVE · ${metadataClue.year || ''}</div>
+            <div class="dossier-meta">${metadataClue.details || ''}</div>
           </div>
         </div>
         <div class="dossier-footer">
-          <div class="countdown-box">${isArchiveMode ? `VAULT ARCHIVE · CASE #${activeDayIndex}` : `NEXT CASE IN <span id="countdown-display" class="countdown-timer"></span>`}</div>
+          <div class="countdown-box">${isArchiveMode ? `VAULT ARCHIVE · CASE #${activeDayIndex}` : `NEXT CASE UNLOCKS IN <span id="countdown-display" class="countdown-timer"></span>`}</div>
           <button id="share-btn" class="share-action-btn" onclick="copyShareScore()">
             <span>SHARE RESULT</span>
             <div class="visual-result-grid">${htmlGrid}</div>
