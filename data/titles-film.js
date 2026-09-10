@@ -330,7 +330,7 @@ const movieTitles = [
     "poster": "https://image.tmdb.org/t/p/w500/wqnLdwVXoBjKibFRR5U3y0aDUhs.jpg"
   },
   {
-    "title": "WALL·E",
+    "title": "WALL-E",
     "year": "2008",
     "poster": "https://image.tmdb.org/t/p/w500/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg"
   },
