@@ -29,8 +29,65 @@ const searchIndex = {
 };
 
 // =========================================================
-// 2. STATE MANAGEMENT (DECOUPLED DATA MODEL)
+// 2. STATE MANAGEMENT & STREAKS (DECOUPLED DATA MODEL)
 // =========================================================
+
+// Safe local date string to avoid midnight UTC timezone bugs
+function getLocalDateString() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// Attendance Streak Logic
+function updateDailyStreak(wonToday) {
+  if (isArchiveMode) return; // Vault games do not affect streaks
+
+  const todayStr = getLocalDateString();
+  let stats = { currentStreak: 0, bestStreak: 0, lastPlayedDate: null, flawless: true };
+
+  try {
+    const raw = localStorage.getItem('cinemind_user_stats');
+    if (raw) stats = { ...stats, ...JSON.parse(raw) };
+  } catch (e) {}
+
+  // If already played today (e.g. finished Film, now playing TV)
+  if (stats.lastPlayedDate === todayStr) {
+    if (!wonToday) stats.flawless = false; // Strip flawless if they fail the second game today
+    localStorage.setItem('cinemind_user_stats', JSON.stringify(stats));
+    return;
+  }
+
+  // Calculate day difference safely
+  let isConsecutive = false;
+  if (stats.lastPlayedDate) {
+    const [lY, lM, lD] = stats.lastPlayedDate.split('-');
+    const [cY, cM, cD] = todayStr.split('-');
+    const lastDate = new Date(lY, lM - 1, lD);
+    const currDate = new Date(cY, cM - 1, cD);
+    const diffDays = Math.round((currDate - lastDate) / (1000 * 60 * 60 * 24));
+    isConsecutive = (diffDays === 1);
+  }
+
+  if (isConsecutive) {
+    stats.currentStreak++;
+    if (!wonToday) stats.flawless = false;
+  } else {
+    stats.currentStreak = 1;
+    stats.flawless = wonToday;
+  }
+
+  stats.lastPlayedDate = todayStr;
+  if (stats.currentStreak > stats.bestStreak) stats.bestStreak = stats.currentStreak;
+
+  localStorage.setItem('cinemind_user_stats', JSON.stringify(stats));
+}
+
+// Helper to fetch streak for UI rendering
+function getStreakData() {
+  try { return JSON.parse(localStorage.getItem('cinemind_user_stats')); }
+  catch (e) { return null; }
+}
+
 class GameManager {
   constructor(dayIndex) {
     this.dayIndex = dayIndex;
@@ -94,6 +151,7 @@ class GameManager {
       tabState.isSuccess = true;
       tabState.gameOver = true;
       tabState.message = "";
+      updateDailyStreak(true); // Triggers streak save on win
     } else {
       if (tabState.clueIndex < puzzle.clues.length - 1) {
         tabState.clueIndex++;
@@ -102,6 +160,7 @@ class GameManager {
         tabState.isSuccess = false;
         tabState.gameOver = true;
         tabState.message = "";
+        updateDailyStreak(false); // Triggers streak save on loss
       }
     }
     this.saveState();
@@ -121,6 +180,7 @@ class GameManager {
       tabState.isSuccess = false;
       tabState.gameOver = true;
       tabState.message = "";
+      updateDailyStreak(false); // Triggers streak save on skip-loss
     }
     this.saveState();
   }
@@ -429,32 +489,79 @@ function updateUI(triggerRevealAnimation = false) {
         return `<span class="seal-pip ${pipClass}"></span>`;
       }).join("");
 
-      DOM.posterCard.className = `dossier-card ${state.isSuccess ? 'victory' : 'defeat'}`;
-      
-      const vaultPrompt = !isArchiveMode 
-        ? `<a href="vault.html" class="vault-promo-link">ACCESS THE VAULT TO CRACK PAST CASES &raquo;</a>`
-        : `<a href="vault.html" class="vault-promo-link">&raquo; RETURN TO THE VAULT</a>`;
-
       const metadataClue = puzzle.clues.find(c => c.format === "metadata") || {};
 
+      // 1. Gather Streak Data for Flexbox
+      let streakContent = "";
+      if (!isArchiveMode) {
+        const stats = getStreakData();
+        if (stats && stats.currentStreak > 0) {
+          const stampColor = "#cc5555"; 
+          const paddedStreak = String(stats.currentStreak).padStart(2, '0');
+          streakContent = `
+            <div style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 3px double ${stampColor}; border-radius: 48% 53% 51% 49%; color: ${stampColor}; font-family: 'Courier Prime', monospace; font-size: 15px; font-weight: bold; transform: rotate(-8deg); opacity: 0.85; margin-right: 12px; flex-shrink: 0; text-shadow: 0px 0px 1px rgba(204, 85, 85, 0.4); box-shadow: inset 0 0 1px rgba(204, 85, 85, 0.3), 0 0 1px rgba(204, 85, 85, 0.3);">
+              ${paddedStreak}
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+              <span style="color: #dcd0bc; font-size: 13px; font-weight: bold; letter-spacing: 1px;"> DAYS ON THE CASE</span>
+              <span style="color: #d4af37; font-size: 10px; opacity: 0.9;">BEST STREAK: ${stats.bestStreak}</span>
+            </div>
+          `;
+        }
+      }
+
+      // 2. Vault Link (Manila hex applied)
+      const vaultPrompt = !isArchiveMode 
+        ? `<a href="vault.html" class="vault-promo-link" style="color: #dcd0bc; font-size: 11px; letter-spacing: 1px; text-decoration: none; margin-top: 10px; display: block;">ACCESS THE VAULT TO CRACK PAST CASES &raquo;</a>`
+        : `<a href="vault.html" class="vault-promo-link" style="color: #dcd0bc; font-size: 11px; letter-spacing: 1px; text-decoration: none; margin-top: 10px; display: block;">&raquo; RETURN TO THE VAULT</a>`;
+
+      // 3. Status Stamp (Fixed flexbox stretch and thickened border)
+      const statusStamp = state.isSuccess 
+        ? `<div style="color: #5bb18f; border: 2px solid #5bb18f; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; letter-spacing: 1px; display: inline-flex; align-self: flex-start; margin-bottom: 8px; transform: rotate(-2deg); box-shadow: inset 0 0 1px rgba(91, 177, 143, 0.3);">✓ CASE SOLVED</div>`
+        : `<div style="color: #cc5555; border: 2px solid #cc5555; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; letter-spacing: 1px; display: inline-flex; align-self: flex-start; margin-bottom: 8px; transform: rotate(-2deg); box-shadow: inset 0 0 1px rgba(204, 85, 85, 0.3);">✕ UNRESOLVED</div>`;
+
+      // 4. Master HTML Construction
+      DOM.posterCard.className = `dossier-card ${state.isSuccess ? 'victory' : 'defeat'}`;
       DOM.posterCard.innerHTML = `
-        <div class="dossier-header ${state.isSuccess ? 'victory-text' : 'defeat-text'}">
-          <span>${state.isSuccess ? '✓ CASE SOLVED' : '✕ CASE UNRESOLVED'}</span>
-          <span>${state.isSuccess ? `CRACKED IN ${state.clueIndex + 1}/5` : 'OUT OF CLUES'}</span>
-        </div>
-        <div class="dossier-body">
-          <img class="dossier-poster" src="${puzzle.poster}" alt="${puzzle.title}" />
-          <div class="dossier-details">
-            <div class="dossier-title">${puzzle.title}</div>
-            <div class="dossier-meta">${game.activeTab.toUpperCase()} PRODUCTION ARCHIVE · ${metadataClue.year || ''}</div>
-            <div class="dossier-meta">${metadataClue.details || ''}</div>
+        
+        <!-- ZONE 1: The Case (Poster + Info + Status) -->
+        <div style="display: flex; gap: 18px; margin-bottom: 20px;">
+          <!-- Evidence Photo Treatment for Poster -->
+          <div style="flex-shrink: 0; background: #e0e0e0; padding: 4px; border: 1px solid #111; border-radius: 2px; box-shadow: 2px 3px 6px rgba(0,0,0,0.4); transform: rotate(-1deg);">
+            <img class="dossier-poster" src="${puzzle.poster}" alt="${puzzle.title}" style="margin: 0; width: 95px; height: auto; display: block;" />
+          </div>
+          <div style="display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">
+            ${statusStamp}
+            <div class="dossier-title" style="margin-top: 0; font-size: 18px; line-height: 1.1; margin-bottom: 6px;">${puzzle.title}</div>
+            <div class="dossier-meta" style="color: #999;">${game.activeTab.toUpperCase()} ARCHIVE · ${metadataClue.year || ''}</div>
+            <div class="dossier-meta" style="color: #777;">${metadataClue.details || ''}</div>
           </div>
         </div>
-        <div class="dossier-footer">
-          <div class="countdown-box">${isArchiveMode ? `VAULT ARCHIVE · CASE #${activeDayIndex}` : `NEXT CASE UNLOCKS IN <span id="countdown-display" class="countdown-timer"></span>`}</div>
-          <button id="share-btn" class="share-action-btn" onclick="copyShareScore()">
-            <span>SHARE RESULT</span>
-            <div class="visual-result-grid">${htmlGrid}</div>
+
+        <!-- ZONE 2: The Operative (Side-by-Side Stats) -->
+        <div style="display: flex; background: rgba(0,0,0,0.15); border: 1px solid #333; border-radius: 6px; padding: 12px; margin-bottom: 20px;">
+          
+          <!-- Left side: Streak -->
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; border-right: 1px dashed #444; padding-right: 10px;">
+            ${streakContent || `<span style="color:#666; font-size: 11px;">NO ACTIVE STREAK</span>`}
+          </div>
+          
+          <!-- Right side: Timer (High contrast sizes) -->
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-left: 10px;">
+            <span style="color: #dcd0bc; font-size: 9px; font-weight: bold; letter-spacing: 2px; margin-bottom: 4px; text-transform: uppercase;">
+              ${isArchiveMode ? 'VAULT ARCHIVE' : 'NEXT CASE UNLOCKS IN'}
+            </span>
+            <span id="countdown-display" style="color: var(--amber, #d4af37); font-size: 18px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 3px rgba(212, 175, 55, 0.2);">
+              ${isArchiveMode ? `CASE #${activeDayIndex}` : '00:00:00'}
+            </span>
+          </div>
+        </div>
+
+        <!-- ZONE 3: The Actions (Share + Vault) -->
+        <div style="text-align: center;">
+          <button id="share-btn" class="share-action-btn" onclick="copyShareScore()" style="width: 100%; padding: 12px; margin-bottom: 5px;">
+            <span style="font-size: 14px;">SHARE RESULT</span>
+            <div class="visual-result-grid" style="transform: scale(0.85);">${htmlGrid}</div>
           </button>
           ${vaultPrompt}
         </div>
@@ -480,7 +587,15 @@ window.copyShareScore = function() {
   const state = game.getCurrentTabState();
   const textGrid = Array.from({ length: 5 }).map((_, i) => (state.isSuccess && i === state.clueIndex) ? "🟩" : (i <= state.clueIndex ? "🟥" : "⬛")).join("");
   
-  navigator.clipboard.writeText(`CINEMIND (${game.activeTab.toUpperCase()}) #${activeDayIndex}\n${state.isSuccess ? state.clueIndex + 1 : 'X'}/5 Clues\n${textGrid}\nhttps://cinemind.game`).then(() => {
+  let streakText = "";
+  if (!isArchiveMode) {
+    const stats = getStreakData();
+    if (stats && stats.currentStreak > 0) {
+      streakText = `\n🔥 Active Duty: ${stats.currentStreak} Day${stats.currentStreak !== 1 ? 's' : ''}`;
+    }
+  }
+
+  navigator.clipboard.writeText(`CINEMIND (${game.activeTab.toUpperCase()}) #${activeDayIndex}\n${state.isSuccess ? state.clueIndex + 1 : 'X'}/5 Clues${streakText}\n${textGrid}\nhttps://playcinemind.com`).then(() => {
     const btn = document.getElementById("share-btn");
     const originalHTML = btn.innerHTML; 
     
