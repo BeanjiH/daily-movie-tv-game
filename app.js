@@ -520,7 +520,40 @@ function updateUI(triggerRevealAnimation = false) {
         ? `<div style="color: #5bb18f; border: 2px solid #5bb18f; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; letter-spacing: 1px; display: inline-flex; align-self: flex-start; margin-bottom: 8px; transform: rotate(-2deg); box-shadow: inset 0 0 1px rgba(91, 177, 143, 0.3);">✓ CASE SOLVED</div>`
         : `<div style="color: #cc5555; border: 2px solid #cc5555; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; letter-spacing: 1px; display: inline-flex; align-self: flex-start; margin-bottom: 8px; transform: rotate(-2deg); box-shadow: inset 0 0 1px rgba(204, 85, 85, 0.3);">✕ UNRESOLVED</div>`;
 
-      // 4. Master HTML Construction
+      // 4. Dynamically build ZONE 2 (The Stats Box)
+      let statsBoxHTML = "";
+      if (isArchiveMode) {
+        // Vault Mode: Single column, centered timer only
+        statsBoxHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.15); border: 1px solid #333; border-radius: 6px; padding: 12px; margin-bottom: 20px;">
+            <span style="color: #dcd0bc; font-size: 9px; font-weight: bold; letter-spacing: 2px; margin-bottom: 4px; text-transform: uppercase;">
+              NEXT DAILY CASE
+            </span>
+            <span id="countdown-display" style="color: var(--amber, #d4af37); font-size: 20px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 3px rgba(212, 175, 55, 0.2);">
+              00:00:00
+            </span>
+          </div>
+        `;
+      } else {
+        // Daily Mode: 2-column layout with Streak on the left and Timer on the right
+        statsBoxHTML = `
+          <div style="display: flex; background: rgba(0,0,0,0.15); border: 1px solid #333; border-radius: 6px; padding: 12px; margin-bottom: 20px;">
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; border-right: 1px dashed #444; padding-right: 10px;">
+              ${streakContent || `<span style="color:#666; font-size: 11px;">NO ACTIVE STREAK</span>`}
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-left: 10px;">
+              <span style="color: #dcd0bc; font-size: 9px; font-weight: bold; letter-spacing: 2px; margin-bottom: 4px; text-transform: uppercase;">
+                NEXT CASE
+              </span>
+              <span id="countdown-display" style="color: var(--amber, #d4af37); font-size: 20px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 3px rgba(212, 175, 55, 0.2);">
+                00:00:00
+              </span>
+            </div>
+          </div>
+        `;
+      }
+
+      // 5. Master HTML Construction
       DOM.posterCard.className = `dossier-card ${state.isSuccess ? 'victory' : 'defeat'}`;
       DOM.posterCard.innerHTML = `
         
@@ -539,23 +572,7 @@ function updateUI(triggerRevealAnimation = false) {
         </div>
 
         <!-- ZONE 2: The Operative (Side-by-Side Stats) -->
-        <div style="display: flex; background: rgba(0,0,0,0.15); border: 1px solid #333; border-radius: 6px; padding: 12px; margin-bottom: 20px;">
-          
-          <!-- Left side: Streak -->
-          <div style="flex: 1; display: flex; align-items: center; justify-content: center; border-right: 1px dashed #444; padding-right: 10px;">
-            ${streakContent || `<span style="color:#666; font-size: 11px;">NO ACTIVE STREAK</span>`}
-          </div>
-          
-          <!-- Right side: Timer (High contrast sizes) -->
-          <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-left: 10px;">
-            <span style="color: #dcd0bc; font-size: 9px; font-weight: bold; letter-spacing: 2px; margin-bottom: 4px; text-transform: uppercase;">
-              ${isArchiveMode ? 'VAULT ARCHIVE' : 'NEXT CASE UNLOCKS IN'}
-            </span>
-            <span id="countdown-display" style="color: var(--amber, #d4af37); font-size: 18px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 3px rgba(212, 175, 55, 0.2);">
-              ${isArchiveMode ? `CASE #${activeDayIndex}` : '00:00:00'}
-            </span>
-          </div>
-        </div>
+        ${statsBoxHTML}
 
         <!-- ZONE 3: The Actions (Share + Vault) -->
         <div style="text-align: center;">
