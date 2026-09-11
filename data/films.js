@@ -383,7 +383,7 @@ const filmCatalog = [
       {
         format: "dialogue",
         character: "Robert Neville",
-        line: "My name is Robert Neville. I am a survivor living in New York City. I am broadcasting on all AM frequencies."
+        line: "What the hell are you doing out here, Fred? Fred, if you're real, you better tell me right now!"
       },
       {
         format: "prop",
@@ -398,7 +398,7 @@ const filmCatalog = [
       {
         format: "signature",
         character: "Robert Neville",
-        line: "I'm listening."
+        line: "My name is Robert Neville. I am a survivor living in New York City. I am broadcasting on all AM frequencies. I will be at the South Street Seaport everyday at mid-day, when the sun is highest in the sky."
       }
     ]
   },
@@ -439,7 +439,7 @@ const filmCatalog = [
     clues: [
       {
         format: "scene",
-        slugline: "EXT. GOTHIC CHURCH BELFRY - RAIN",
+        slugline: "EXT. GOTHIC CHURCH - RAIN",
         action: "Thunder roars as an agonized costumed figure thrashes against a swinging iron clapper, sound waves violently ripping black oily tendrils off his skin."
       },
       {
@@ -1618,12 +1618,12 @@ const filmCatalog = [
       {
         format: "scene",
         slugline: "INT. STEEL SMELTING MILL - NIGHT",
-        action: "Molten metal casts a fiery glow over catwalks where a liquid metal pursuer re-forms from shattered chrome droplets after freezing in liquid nitrogen."
+        action: "Sparks cascade into massive vats of glowing molten steel. A severely damaged protector drags himself across the grated catwalks, standing between a terrified mother and an unstoppable pursuer."
       },
       {
         format: "dialogue",
-        character: "Sarah Connor",
-        line: "Watching John with the machine, it was suddenly so clear. The Terminator would never stop. It would never leave him, and it would never hurt him, never shout at him, or get drunk and hit him..."
+        character: "The Terminator",
+        line: "Hey Janelle, what's wrong with Wolfie? I can hear him barking. Is he all right?"
       },
       {
         format: "prop",
@@ -5771,7 +5771,7 @@ const filmCatalog = [
     clues: [
       {
         format: "scene",
-        slugline: "EXT. FLOODED RESIDENTIAL CURB - RAIN",
+        slugline: "EXT. RESIDENTIAL CURB - RAIN",
         action: "A small folded paper boat rushes down a rain-slicked asphalt gutter before disappearing into the black opening of a storm drain."
       },
       {
@@ -5833,7 +5833,7 @@ const filmCatalog = [
     clues: [
       {
         format: "scene",
-        slugline: "EXT. ROLLING SPICE DUNES - DAY",
+        slugline: "EXT. SPRAWLING DESERT - DAY",
         action: "Rhythmic percussive thumps echo across shifting sands before an immense subterranean crest rises, swallowing an industrial harvester whole."
       },
       {
@@ -6484,7 +6484,7 @@ const filmCatalog = [
     clues: [
       {
         format: "scene",
-        slugline: "INT. GLASS ONION ATRIUM - NIGHT",
+        slugline: "INT. GLASS ATRIUM - NIGHT",
         action: "Priceless modern art sculptures and interactive puzzles shatter across polished floors as a drunken, paranoid tech disruptor watches his circle turn on him."
       },
       {
