@@ -1,6 +1,3 @@
-// =========================================================
-// 1. INITIALIZATION & CONFIGURATION
-// =========================================================
 const catalog = {
   film: typeof filmCatalog !== 'undefined' ? filmCatalog : [],
   tv:   typeof tvCatalog !== 'undefined' ? tvCatalog : []
@@ -21,16 +18,12 @@ const isArchiveMode = urlParams.has("day");
 const activeDayIndex = isArchiveMode ? parseInt(urlParams.get("day"), 10) : systemDayIndex;
 const queryCat = urlParams.get("cat");
 
-// Fuzzy Search Engine
+// Fuzzy Search Engine (with Fuse.js)
 const fuseOptions = { threshold: 0.3, includeScore: true, ignoreLocation: true, keys: ['title'] }
 const searchIndex = {
   film: new Fuse(allTitles.film, fuseOptions),
   tv: new Fuse(allTitles.tv, fuseOptions)
 };
-
-// =========================================================
-// 2. STATE MANAGEMENT & STREAKS (DECOUPLED DATA MODEL)
-// =========================================================
 
 // Safe local date string to avoid midnight UTC timezone bugs
 function getLocalDateString() {
@@ -38,9 +31,9 @@ function getLocalDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// Attendance Streak Logic
+// Daily Streak Logic
 function updateDailyStreak(wonToday) {
-  if (isArchiveMode) return; // Vault games do not affect streaks
+  if (isArchiveMode) return; // Prevents Vault games from affecting streaks
 
   const todayStr = getLocalDateString();
   let stats = { currentStreak: 0, bestStreak: 0, lastPlayedDate: null, flawless: true };
@@ -57,7 +50,7 @@ function updateDailyStreak(wonToday) {
     return;
   }
 
-  // Calculate day difference safely
+  // Calculates day difference safely
   let isConsecutive = false;
   if (stats.lastPlayedDate) {
     const [lY, lM, lD] = stats.lastPlayedDate.split('-');
@@ -193,9 +186,7 @@ class GameManager {
 
 const game = new GameManager(activeDayIndex);
 
-// =========================================================
-// 3. DOM BINDING & EVENT LISTENERS
-// =========================================================
+// DOM BINDING & EVENT LISTENERS
 const DOM = {
   cluesList: document.getElementById("clues-list"),
   guessInput: document.getElementById("guess-input"),
@@ -299,9 +290,7 @@ Object.keys(DOM.tabs).forEach(type => {
   });
 });
 
-// =========================================================
-// 4. VIEW RENDERING ENGINE
-// =========================================================
+// VIEW RENDERING ENGINE
 function renderSuggestions(matches) {
   DOM.suggestions.innerHTML = "";
   const tabState = game.getCurrentTabState();
@@ -608,7 +597,7 @@ window.copyShareScore = function() {
   if (!isArchiveMode) {
     const stats = getStreakData();
     if (stats && stats.currentStreak > 0) {
-      streakText = `\n🔥 Active Duty: ${stats.currentStreak} Day${stats.currentStreak !== 1 ? 's' : ''}`;
+      streakText = `\n🔥 Days On The Case: ${stats.currentStreak} Day${stats.currentStreak !== 1 ? 's' : ''}`;
     }
   }
 

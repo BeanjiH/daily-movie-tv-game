@@ -1917,7 +1917,7 @@ const filmCatalog = [
       {
         format: "signature",
         character: "Col. Hans Landa",
-        line: "That's a bingo!"
+        line: "You are sheltering enemies of the state, are you not?"
       }
     ]
   },
